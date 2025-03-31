@@ -12,7 +12,7 @@ public class VisaoEpisodio {
     private static Scanner console = new Scanner(System.in);
 
     public VisaoEpisodio() throws Exception {
-        arqEpisodio = new VisaoEpisodio();
+        arqEpisodio = new ArquivoEpisodio();
     }
 
     public void menu() {
