@@ -65,13 +65,13 @@ Classe para criar a Entidade Episódio. Implementa a interface EntidadeArquivo
 
 #### Atributos
 
-+ ID(int)
++ ID (int)
 + IDSerie (int)
 + nome (String)
-+ temporada (int)
-+ dataLancamento (Date)
-+ duracao (double) (em minutos)
-+ nota (int -> 0:10)
++ temporada (byte)
++ dataLancamento (LocalDate)
++ duracao (float) (em minutos)
++ nota (byte -> 0:10)
 + diretores (ArrayList de String)
 
 #### Funções
@@ -224,7 +224,7 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 
 + Contrutor: Chamando o super( ) e também inicializando a ArvoreBMais e o HashExtensivel (Se o Hash já existir, não sobrescrever) 
 + read(string nome): Função que recebe uma string de Nome e faz a pesquisa no bd, retornando todos os episódios que começam com a sequência da entrada.
-+ readEpisodios( ): Função que retorna todos os episódios da serie. Utilizar nova instância ArquivoEpisodios para isso. 
++ readEpisodios(int IDSerie): Função que retorna todos os episódios da serie. Utilizar nova instância ArquivoEpisodios para isso. 
 + Sobrescrever os métodos create( ), update( ), delete( ) para fazerem as devidas alterações na ArvoreBMais e no HashExtensivel. Testar ao deletar se série tem episódio, caso tenha mostrar erro e abordar função.
 
 ### ArquivoEpisodio extends Arquivo<Episodio>
