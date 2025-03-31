@@ -1,5 +1,6 @@
 package modelo;
 import entidades.Episodio;
+import controle.ControleSerie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,27 +9,39 @@ import aeds3.*;
 
 public class ArquivoEpisodio extends Arquivo<Episodio> {
     Arquivo<Episodio> arqEpisodio;
-    HashExtensivel<ParIDID> indiceSerieEpisodio
+    HashExtensivel<ParIDID> indiceSerieEpisodio;
     ArvoreBMais<ParNomeID> indiceNome;
 
+    /*
+     * Construtor da classe ArquivoEpisodio
+     */
     public ArquivoEpisodio() throws Exception {
+        // Chamar o construtor da classe herdada
         super("episodio", Episodio.class.getConstructor());
 
+        // Chamar o construtor do índice de Série e Episódio
         indiceSerieEpisodio = new HashExtensivel<>(
             ParIDID.class.getConstructor(),
             4,
-            "./dados/"+nomeEntidade+"/indiceSerieEpisodio.d.db",
-            "./dados/"+nomeEntidade+"/indiceSerieEpisodio.c.db"
+            "./dados/indices/indiceSerieEpisodio.d.db",
+            "./dados/indices/indiceSerieEpisodio.c.db"
             );
 
+        // Chamar o construtor do índice de Nome do episódio e seu ID
         indiceNome = new ArvoreBMais<>(
             ParNomeID.class.getConstructor(), 
             5, 
             "./dados/"+nomeEntidade+"/indiceNome.db");
     }
 
+    /*
+     * create - Função para criar um Episódio no Banco de Dados
+     * @param e - Episódio a ser inserido (sem o ID)
+     * @return id - ID do Episódio inserido
+     */
     @Override
     public int create(Episodio e) throws Exception {
+        // Criar o Episódio 
         int id = super.create(e);
 
         indiceSerieEpisodio.create(new ParIDID(e.getIDSerie(), id));
@@ -37,27 +50,15 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         return id;
     }
 
-    public List<Episodio> readIDSerie(int IDSerie) throws Exception {
-        if( !ControleSerie.validarSerie(IDSerie) )
-            throw new Exception("IDSerie inválido");
-
-        List<ParIDID> piis = indiceSerieEpisodio.read(ParIDID.hash(IDSerie));
-
-        if(piis != null) {
-            List<Episodio> episodios = new ArrayList<Episodio>();
-            for (ParIDID pii : piis) {
-                episodios.add( super.read(pii.getID()) );
-            }
-            return episodios;
-        }
-        else 
-            return null;
-    }
-
-    public Episodio readEpisodios(int IDSerie) throws Exception {
-        if (!ControleSerie.validarSerie(IDSerie))
-            throw new Exception("IDSerie inválido");
-        ParIDID pii = indiceSerieEpisodio.read();
+    /*
+     * read - Função para ler um Episódio do Banco de Dados a partir do seu ID
+     * @param id - ID do Episódio a ser lido
+     * @return episodio - Episódio encontrado
+     */
+    @Override
+    public Episodio read(int id) throws Exception {
+        Episodio episodio = arqEpisodio.read(id);
+        return episodio;
     }
 
     public Episodio[] readNome(String nome) throws Exception {
@@ -70,7 +71,7 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
             Episodio[] episodios = new Episodio[pnis.size()];
             int i = 0;
             for(ParNomeID pni: pnis) 
-                episodios[i++] = read(pni.getId());
+                episodios[i++] = read(pni.getID());
             return episodios;
         }
         else 
@@ -93,7 +94,7 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         if(e != null) {
             if(super.update(novoEpisodio)) {
                 if( e.getID() != novoEpisodio.getID() ) {
-                    indiceSerieEpisodio.delete( ParIDID.hash(e.getID()) );
+                    indiceSerieEpisodio.delete( ParIDID.hashCode(e.getID()) );
                     indiceSerieEpisodio.create( new ParIDID(novoEpisodio.getID(), e.getID()) );
                 }
                 if(!e.getNome().equals(novoEpisodio.getNome())) {
@@ -104,6 +105,28 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
             }
         }
         return false;
+    }
+
+    /*
+     * readIDSerie - Função para ler todos os Episódios vinculados a uma Série
+     * @param IDSerie - ID da Série dos episódios a serem procurados
+     * @return episodios - Lista de Episódios que pertencem à Série especificada
+     */
+    public List<Episodio> readIDSerie(int IDSerie) throws Exception {
+        if( !ControleSerie.validarSerie(IDSerie) )
+            throw new Exception("IDSerie inválido");
+
+        List<ParIDID> piis = indiceSerieEpisodio.read(ParIDID.hashCode(IDSerie));
+
+        if(piis != null) {
+            List<Episodio> episodios = new ArrayList<Episodio>();
+            for (ParIDID pii : piis) {
+                episodios.add( super.read(pii.getID()) );
+            }
+            return episodios;
+        }
+        else 
+            return null;
     }
 
 }

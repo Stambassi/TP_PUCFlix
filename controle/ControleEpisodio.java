@@ -1,9 +1,12 @@
+package controle;
+
 import modelo.ArquivoEpisodio;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import modelo.ArquivoSerie;
 
 import entidades.Serie;
 import entidades.Episodio;
@@ -34,9 +37,6 @@ public class ControleEpisodio {
 
     public boolean excluirEpisodio(int id) throws Exception {
         Episodio e = arqEpisodio.read(id);
-
-        if (e == null) 
-            throw new Exception ("Episódio inválido!");
 
         if ( !ControleSerie.validarSerie(e.getIDSerie()) ) 
             throw new Exception ("Série do episódio inválida!");
@@ -80,7 +80,9 @@ public class ControleEpisodio {
     public List<Episodio> buscarEpisodio() throws Exception {
         ArquivoSerie arqSerie = new ArquivoSerie();
 
-        List<Episodio> episodios = arqSerie.readEpisodios(serie.getID());
+        //Converter Episodio[] para List<Episodio>
+        Episodio[] arrayEpisodios = arqSerie.readEpisodios(serie.getID());
+        List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
 
         return episodios;
     }
@@ -107,10 +109,12 @@ public class ControleEpisodio {
         return episodiosValidos;
     }
 
-    public List<Episodio> buscarEpisodioTemporada(int temp) {
+    public List<Episodio> buscarEpisodioTemporada(int temp) throws Exception {
         ArquivoSerie arqSerie = new ArquivoSerie();
 
-        List<Episodio> episodios = arqSerie.readEpisodios(serie.getID());
+        //Converter Episodio[] para List<Episodio>
+        Episodio[] arrayEpisodios = arqSerie.readEpisodios(serie.getID());
+        List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
 
         int i = 0;
         for (Episodio episodio : episodios) {
@@ -121,41 +125,33 @@ public class ControleEpisodio {
 
         return episodios;        
     }
+
+    public Episodio buscarEpisodio(int id, int temporada) throws Exception {
+        Episodio e = arqEpisodio.read(id);
+
+        if (e.getIDSerie() != this.serie.getID())
+            throw new Exception ("Episódio não percente à série!");
+
+        if (e.getTemporada() != temporada)
+            throw new Exception ("Episódio não pertence à temporada!");
+
+        return e;
+    }
+
+    public static boolean verificarEpisodiosSerie(int IDSerie) {
+        boolean resposta;
+        
+        try {
+            ArquivoSerie arqSerie = new ArquivoSerie();
+
+            if (arqSerie.readEpisodios(IDSerie) != null)
+                resposta = true;
+            else
+                resposta = false;
+        } catch (Exception e) {
+            resposta = false;
+        }
+
+        return resposta;
+    }
 }
-
-/*
-
-#### Atributos
-
-+ ArquivoEpisodio arqEpisodio
-+ Serie serie
-
-#### Funções
-
-+ Construtor: Pede uma Série válida como parâmetro
-
-+ incluirEpisodio(Episodio e): Função para insirir Episódio e utilizando os métodos de ArquivoEpisodio 
-
-+ excluirEpisodio(Episodio e): Função para excluir Episodio por ID. Testar se o episódio é válido para remoção(existe no bd e o id pertence a série)
-
-+ excluirEpisodio(Episodio e, int temp): Função para excluir Episodio por ID e uma temporada. Testar se o episódio é válido para remoção(existe no bd, pertence a série e está na temporada especificada)
-
-+ alterarEpisodio(Episodio e): Função para alterar algum valor da Episodio.
-
-+ buscarEpisodio(): Função que retorna todos os episódios da série
-
-+ buscarEpisodio(int id): Função que busca um objeto Episódio pelo ID e retorna caso esteja na série.
-
-+ buscarEpisodio(String entrada): Função que le um nome e retorna um episódio que contém a sequência inserida que está na série especificada. Pode receber mais de um objeto da funcao do arqEpisodio.
-
-+ buscarEpisodioTemporada(int temp): Função que retorna uma lista de episódios que estão na sérieAtual e presentes na temporada temp.
-
-+ buscarEpisodio(int id, int temp): Função que busca um objeto Episódio pelo ID e retorna caso esteja na série e na temporada.
-
-+ buscarEpisodio(String entrada, int temp): Função que le um nome e retorna um episódio que contém a sequência inserida que está na série e na temporada especificada. Pode receber mais de um objeto da funcao do arqEpisodio.
-
-+ verificarEpisodiosSerie( ): Função estática que, com um ID de Série, retorna verdadeiro ou falso se tiver um ou mais episódios atrelados a essa série.
-
-+ povoar( ): Primeiro carregamento de dados para o sistema.
-
-*/

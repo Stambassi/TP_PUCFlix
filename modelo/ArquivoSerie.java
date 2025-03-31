@@ -1,6 +1,8 @@
 package modelo;
+
 import entidades.Serie;
 import entidades.Episodio;
+import controle.ControleSerie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +11,7 @@ import aeds3.*;
 
 public class ArquivoSerie extends Arquivo<Serie> {
     Arquivo<Serie> arqSerie;
-    HashExtensivel<ParIDID> indiceSerieEpisodio
+    HashExtensivel<ParIDID> indiceSerieEpisodio;
     ArvoreBMais<ParNomeID> indiceNome;
 
     public ArquivoSerie() throws Exception {
@@ -57,7 +59,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
             Serie[] Series = new Serie[pnis.size()];
             int i = 0;
             for(ParNomeID pni: pnis) 
-                Series[i++] = read(pni.getId());
+                Series[i++] = read(pni.getID());
             return Series;
         }
         else 
