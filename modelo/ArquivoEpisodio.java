@@ -61,13 +61,22 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         return episodio;
     }
 
+    /*
+     * readNome - Função para buscar todos os Episódios cujo nome inicia com uma String especificada
+     * @param nome - String a ser buscada
+     * @return episodios - Array de Episódios encontrados
+     */
     public Episodio[] readNome(String nome) throws Exception {
+        // Testar se o nome é válido
         if (nome.length() == 0)
-            return null;
+            throw new Exception("Nome inválido!");
 
+        // Definir Lista de Par Nome-ID que possuem a String especificada
         ArrayList<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
 
+        // Testar se há algum Par encontrado
         if (pnis.size() > 0) {
+            // Definir array de Episódios com o tamanho do número de pares
             Episodio[] episodios = new Episodio[pnis.size()];
             int i = 0;
             for(ParNomeID pni: pnis) 

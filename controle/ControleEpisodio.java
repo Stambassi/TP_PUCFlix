@@ -91,10 +91,10 @@ public class ControleEpisodio {
     /*
      * excluirEpisodio - Função para excluir o Episódio de uma determinada temporada
      * @param e - Episódio a ser excluído
-     * @param temp - Temporada da Série a qual o Episódio pertence
+     * @param temporada - Temporada da Série a qual o Episódio pertence
      * @return boolean - True se bem sucedido, False caso contrário
      */
-    public boolean excluirEpisodio(Episodio e, int temp) throws Exception {
+    public boolean excluirEpisodio(Episodio e, int temporada) throws Exception {
         // Testar se o objeto Episódio é válido
         if (e == null) 
             throw new Exception ("Episódio nulo!");
@@ -104,7 +104,7 @@ public class ControleEpisodio {
             throw new Exception ("Episódio não pertence à Série atual!");
 
         // Testar se o Episódio pertence à temporada correpondente
-        if (e.getTemporada() != temp)
+        if (e.getTemporada() != temporada)
             throw new Exception ("Episódio não pertence à temporada!");
 
         // Excluir o Episódio a partir do ArquivoEpisodio e retornar o seu status
@@ -153,7 +153,7 @@ public class ControleEpisodio {
      * @return e - Objeto do Episódio buscado
      */
     public Episodio buscarEpisodio(int id) throws Exception {
-        // Ler o Episódio a partir do ArquivoEpisódio usando seu ID
+        // ler o episódio a partir do arquivoepisódio usando seu id
         Episodio e = arqEpisodio.read(id);
 
         // Testar se o Episódio pertence à Série da instância atual
@@ -189,43 +189,69 @@ public class ControleEpisodio {
 
     /*
      * buscarEpisodioTemporada - Função para buscar todos os Episódios de uma temporada da Série atual
+     * @param temporada - Temporada dos Episódios a serem buscados
+     * @return episodios - Lista com os Episódios pertencentes à temporada especificada da Série atual
      */
-    public List<Episodio> buscarEpisodioTemporada(int temp) throws Exception {
-        
+    public List<Episodio> buscarEpisodioTemporada(int temporada) throws Exception {
+        // Definir instância do ArquivoSerie
         ArquivoSerie arqSerie = new ArquivoSerie();
 
-        //Converter Episodio[] para List<Episodio>
+        // Ler todos os Episódios da Série atual a partir do ArquivoSerie
         Episodio[] arrayEpisodios = arqSerie.readEpisodios(serie.getID());
+
+        //Converter Episodio[] para List<Episodio>
         List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
 
+        // Iterar sobre todos os Episódios encontrados e filtrar apenas os que pertencem à temporada
         int i = 0;
         for (Episodio episodio : episodios) {
-            if (episodio.getIDSerie() != serie.getID())
+            // Testar se o Episódio pertence à temporada especificada
+            if (episodio.getTemporada() != temporada)
                 episodios.remove(i);
             i++;
         }
 
+        // Retornar os Episódios que pertencem à temporada da Série atual
         return episodios;        
     }
 
+    /*
+     * buscarEpisodio - Função para buscar um objeto Episódio pelo ID de uma temporada específica da Série atual 
+     * @param id - ID do Episódio a ser buscado
+     * @param temporada - Temporada da Série atual
+     * @return e - Episódio buscado de uma temporada específica da Série atual
+     */
     public Episodio buscarEpisodio(int id, int temporada) throws Exception {
+        // ler o episódio a partir do arquivoepisódio usando seu id
         Episodio e = arqEpisodio.read(id);
 
-        if (e.getIDSerie() != this.serie.getID())
-            throw new Exception ("Episódio não percente à série!");
+        // Testar se o Episódio pertence à Série da instância atual
+        if ( e.getIDSerie() != this.serie.getID() ) 
+            throw new Exception ("Episódio não pertence à Série atual!");
 
+        // Testar se o Episódio pertence à temporada da Série da instância atual
         if (e.getTemporada() != temporada)
             throw new Exception ("Episódio não pertence à temporada!");
 
+        // Retornar Episódio encontrada
         return e;
     }
 
+    /*
+     * verificarEpisodiosSerie - Função estática para verificar se existem episódios de uma Série a partir de seu ID
+     * @param IDSerie - ID da Série a ser testada
+     * @return resposta - True se existir algum Episódio da Série atual, False caso contrário
+     */
     public static boolean verificarEpisodiosSerie(int IDSerie) {
+        // Definir variável de resposta
         boolean resposta;
         
+        // Iniciar bloco try-catch
         try {
+        // Definir instância do ArquivoSerie
             ArquivoSerie arqSerie = new ArquivoSerie();
 
+        // Testar se há algum episódio na Série encontrada
             if (arqSerie.readEpisodios(IDSerie) != null)
                 resposta = true;
             else
@@ -234,6 +260,7 @@ public class ControleEpisodio {
             resposta = false;
         }
 
+        // Retornar
         return resposta;
     }
 }
