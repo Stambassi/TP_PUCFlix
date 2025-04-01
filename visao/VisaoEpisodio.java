@@ -4,6 +4,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import entidades.Episodio;
 import entidades.Serie;
@@ -83,7 +85,11 @@ public class VisaoEpisodio {
         float duracao; // em minutos
         int nota; // 0 a 10
         List<String> diretores;
+        String diretor;
         boolean dadosCorretos = false;
+        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
+        Pattern pattern = Pattern.compile(regex);
+
         do {
             System.out.print("Qual o nome do Episódio? ");
             nome = console.nextLine();
@@ -106,69 +112,67 @@ public class VisaoEpisodio {
             console.nextLine();
         } while(!dadosCorretos);
 
+        
+        do {
+            System.out.print("Qual a data de lançamento (yyyy-MM-dd)? ");
+            String data = console.nextLine();
+            Matcher matcher = pattern.matcher(data);
+
+            if(matcher.matches()){
+                dadosCorretos = true;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                dataLancamento = LocalDate.parse(data, formatter);
+            }
+            else
+                System.err.println("O formato deve ser (yyyy-MM-dd).");
+        } while(!dadosCorretos);
+
+
         dadosCorretos = false;
         do {
-            System.out.print("Qual o ano de lançamento (yyyy)? ");
+            System.out.print("Qual a duração (minutos)? ");
             if (console.hasNextInt()) {
-                anoLancamento = console.nextInt();
-                if(1000 <= anoLancamento && anoLancamento <= 9999)
+                duracao = console.nextFloat();
+                if(0 < duracao)
                     dadosCorretos = true;
             }else{
-                System.err.println("O ano deve ser de 4 dígitos.");
+                System.err.println("O episódio deve ter mais que 0 minutos");
             }
             console.nextLine();
         } while(!dadosCorretos);
 
         dadosCorretos = false;
         do {
-            System.out.print("Qual a sinopse? ");
-            sinopse = console.nextLine();
-            if(sinopse.length()>=4)
-                dadosCorretos = true;
-            else
-                System.err.println("A sinopse deve ter no mínimo 4 caracteres.");
+            System.out.print("Qual a duração (minutos)? ");
+            if (console.hasNextInt()) {
+                duracao = console.nextFloat();
+                if(0 < duracao)
+                    dadosCorretos = true;
+            }else{
+                System.err.println("O episódio deve ter mais que 0 minutos");
+            }
+            console.nextLine();
         } while(!dadosCorretos);
-
-        dadosCorretos = false;
-        do {
-            System.out.print("Qual o streaming? ");
-            streaming = console.nextLine();
-            if(streaming.length()>=4)
-                dadosCorretos = true;
-            else
-                System.err.println("O streaming deve ter no mínimo 4 caracteres.");
-        } while(!dadosCorretos);
-
         
 
         dadosCorretos = false;
         do {
-            System.out.print("Quais são os criadores (digite FIM para parar)? ");
-            criador = console.nextLine();
-            if(criador.equals("FIM") && criadores.length > 0){
-                dadosCorretos =  true
+            System.out.print("Quais são os diretores (digite FIM para parar)? ");
+            diretor = console.nextLine();
+            if(diretor.equals("FIM") && diretores.size() > 0){
+                dadosCorretos =  true;
             } else {
-                if (criadores.length == 0) {
+                if (diretores.size() == 0) {
                     System.err.println("A Série deve conter pelo menos um criador");
-                } else if(criador.length()>=4){
-                    criadores.append(criador)
+                } else if(diretores.size() >=4){
+                    diretores.add(diretor);
                 } else {
                     System.err.println("O criador deve ter no mínimo 4 caracteres.");
                 }
             }
         } while(!dadosCorretos);
 
-        dadosCorretos = false;
-        do {
-            System.out.print("Qual o gênero? ");
-            genero = console.nextLine();
-            if(genero.length()>=4)
-                dadosCorretos = true;
-            else
-                System.err.println("O gênero deve ter no mínimo 4 caracteres.");
-        } while(!dadosCorretos);
-
-       return Episodio(nome, anoLancamento, sinopse, streaming, nota, criadores, genero)
+       return new Episodio(IDSerie,nome,temporada, dataLancamento, duracao, nota, diretores);
     }
 
     public void escolhasBusca(){
