@@ -53,36 +53,71 @@ public class ArquivoSerie extends Arquivo<Serie> {
     /*
      * readEpisodios - Função para retornar todos os Episódios que pertencem à Série especificada
      * @param id - ID da Série
+     * @return episodios - Array dos Episódios que pertencem à Série especificada
      */
     public Episodio[] readEpisodios(int id) throws Exception {
-        List<Episodio> episodios = new ArrayList<Episodio>();
+        // Definir ArquivoEpisodio
+        ArquivoEpisodio arqEpisodio = new ArquivoEpisodio();
+
+        // Testar se o ID existe no Banco de Dados
         if (!ControleSerie.validarSerie(id))
             throw new Exception("ID da Série inválido");
-        ParIDID pii = indiceSerieEpisodio.read();
-        while (pii != null){
-            episodios.add(pii)
-            pii = indiceSerieEpisodio.read();
+
+        // Buscar o ParIDID de Série-Episódio a partir do ID da Série
+        List<ParIDID> piis = indiceSerieEpisodio.read();
+
+        // Definir array de Episódios com o tamanho da lista de Pares Série-Episódio
+        Episodio[] episodios = new Episodio[piis.size()];
+
+        // Iterar sobre a lista de Par Série-Episódio
+        int i = 0;
+
+        for (ParIDID pii : piis) {
+            // Buscar Episódio referente ao Par Série-Episódio
+            Episodio e = arqEpisodio.read(pii.getIDEpisodio());
+
+            // Adicionar o episódio encontrado no array de Episódios
+            episodios[i++] = e;
         }
-        return episodios
+
+        // Retornar lista de Episódios
+        return episodios;
     }
     
+    /*
+     * readNome - Função para retornar uma array de Séries cujo nome começa com determinada String
+     * @param nome - String a ser testada
+     * @return series - Array de Séries cujo nome começa com determinada String
+     */
     public Serie[] readNome(String nome) throws Exception {
+        // Testar se o nome é válido
         if (nome.length() == 0)
-            return null;
+            throw new Exception("Nome inválido!");
 
+        // Definir lista de Par Nome-ID que possuem a String especificada
         ArrayList<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
 
-        if (pnis.size() > 0) {
-            Serie[] Series = new Serie[pnis.size()];
-            int i = 0;
-            for(ParNomeID pni: pnis) 
-                Series[i++] = read(pni.getID());
-            return Series;
-        }
-        else 
-            return null;
+        // Testar se há algum Par encontrado
+        if ( !(pnis.size() > 0) )
+            throw new Exception ("Não foi encontrado nenhuma Série com o nome buscado!");
+
+        // Definir array de Séries com o tamanho do número de pares
+        Serie[] series = new Serie[pnis.size()];
+
+        // Iterar sobre a lista de Pares Nome-ID a adicionar as Séries correspondentes ao array de Séries
+        int i = 0;
+        for(ParNomeID pni: pnis) 
+            series[i++] = this.read(pni.getID());
+
+        // Retornar
+        return series;
     }
 
+    /*
+     * delete - Função para excluir uma Série a partir de um ID
+     * @param id - ID da Série a ser excluída
+     * @return boolean - True se sucedido, False se contrário
+     */
     @Override
     public boolean delete(int id) throws Exception {
         Serie e = super.read(id);   // na superclasse
@@ -98,6 +133,11 @@ public class ArquivoSerie extends Arquivo<Serie> {
         return false;
     }
 
+    /*
+     * update - Função para atualizar uma Série
+     * @param novaSerie - Objeto já alterado da Série
+     * @return boolean - True se sucedido, False se contrário
+     */
     @Override
     public boolean update(Serie novaSerie) throws Exception {
         Serie e = super.read(novaSerie.getID());    // na superclasse

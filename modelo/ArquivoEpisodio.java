@@ -95,6 +95,11 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         return episodios;
     }
 
+    /*
+     * delete - Função para excluir um Episódio a partir de um ID
+     * @param id - ID do Episódio a ser excluído
+     * @return boolean - True se sucedido, False se contrário
+     */
     @Override
     public boolean delete(int id) throws Exception {
         Episodio e = super.read(id);   // na superclasse
@@ -105,6 +110,11 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         return false;
     }
 
+    /*
+     * update - Função para atualizar um Episódio
+     * @param novoEpisodio - Objeto já alterado do Episódio
+     * @return boolean - True se sucedido, False se contrário
+     */
     @Override
     public boolean update(Episodio novoEpisodio) throws Exception {
         Episodio e = super.read(novoEpisodio.getID());    // na superclasse
