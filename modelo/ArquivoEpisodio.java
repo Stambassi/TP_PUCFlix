@@ -44,9 +44,11 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         // Criar o Episódio 
         int id = super.create(e);
 
+        // Criar os índices Serie-Episodio e Nome-Episodio
         indiceSerieEpisodio.create(new ParIDID(e.getIDSerie(), id));
         indiceNome.create(new ParNomeID(e.getNome(), id));
 
+        // Retornar o ID
         return id;
     }
 
@@ -57,7 +59,10 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
      */
     @Override
     public Episodio read(int id) throws Exception {
+        // Ler o episódio a partir do ArquivoEpisodio
         Episodio episodio = arqEpisodio.read(id);
+
+        // Retornar o Episódio buscado
         return episodio;
     }
 
@@ -75,16 +80,19 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         ArrayList<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
 
         // Testar se há algum Par encontrado
-        if (pnis.size() > 0) {
-            // Definir array de Episódios com o tamanho do número de pares
-            Episodio[] episodios = new Episodio[pnis.size()];
-            int i = 0;
-            for(ParNomeID pni: pnis) 
-                episodios[i++] = read(pni.getID());
-            return episodios;
-        }
-        else 
-            return null;
+        if ( !(pnis.size() > 0) )
+            throw new Exception ("Não foi encontrado nenhum Episódio com o nome buscado!");
+        
+        // Definir array de Episódios com o tamanho do número de pares
+        Episodio[] episodios = new Episodio[pnis.size()];
+
+        // Iterar sobre a lista de Pares Nome-ID a adicionar os Episódios correspondentes ao array de Episódios
+        int i = 0;
+        for(ParNomeID pni: pnis) 
+            episodios[i++] = read(pni.getID());
+
+        // Retornar
+        return episodios;
     }
 
     @Override

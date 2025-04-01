@@ -26,7 +26,7 @@ public class Episodio implements EntidadeArquivo {
         this(-1, -1, "", 0, LocalDate.now(), 0F, -1, null);
     }
 
-    public Episodio(int IDSerie, String nome, byte temporada, LocalDate dataLancamento, float duracao, byte nota, List<String> diretores) throws Exception {
+    public Episodio(int IDSerie, String nome, int temporada, LocalDate dataLancamento, float duracao, int nota, List<String> diretores) throws Exception {
         this(-1, IDSerie, nome, temporada, dataLancamento, duracao, nota, diretores);
     }
 

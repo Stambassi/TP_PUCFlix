@@ -14,6 +14,9 @@ public class ArquivoSerie extends Arquivo<Serie> {
     HashExtensivel<ParIDID> indiceSerieEpisodio;
     ArvoreBMais<ParNomeID> indiceNome;
 
+    /*
+     * Construtor da classe ArquivoSerie
+     */
     public ArquivoSerie() throws Exception {
         super("serie", Serie.class.getConstructor());
 
@@ -30,23 +33,37 @@ public class ArquivoSerie extends Arquivo<Serie> {
             "./dados/"+nomeEntidade+"/indiceNome.db");
     }
 
+    /*
+     * create - Função para criar um objeto Série junto com os seus índices
+     * @param s - Objeto da Série a ser inserido
+     * @return id - ID da Série inserida
+     */
     @Override
     public int create(Serie s) throws Exception {
+        // Criar a Série
         int id = super.create(s);
+
+        // Criar o índice Nome-Série
         indiceNome.create(new ParNomeID(s.getNome(), id));
+
+        // Retornar o ID da Série
         return id;
     }
 
-    public List<Episodio> readEpisodios(int IDSerie) throws Exception {
+    /*
+     * readEpisodios - Função para retornar todos os Episódios que pertencem à Série especificada
+     * @param id - ID da Série
+     */
+    public Episodio[] readEpisodios(int id) throws Exception {
         List<Episodio> episodios = new ArrayList<Episodio>();
-        if (!ControleSerie.validarSerie(IDSerie))
-            throw new Exception("IDSerie inválido");
+        if (!ControleSerie.validarSerie(id))
+            throw new Exception("ID da Série inválido");
         ParIDID pii = indiceSerieEpisodio.read();
         while (pii != null){
-            episodios.add(pii);
+            episodios.add(pii)
             pii = indiceSerieEpisodio.read();
         }
-        return episodios;
+        return episodios
     }
     
     public Serie[] readNome(String nome) throws Exception {

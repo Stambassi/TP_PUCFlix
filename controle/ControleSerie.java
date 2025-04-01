@@ -52,45 +52,106 @@ public class ControleSerie {
         return arqSerie.delete(id);
     }
 
+    /*
+     * alterarSerie - Função para alterar uma Série
+     * @param s - Objeto já alterado a ser inserido no Banco de Dados
+     * @return boolean - True se bem sucedido, False caso contrário
+     */
+    public boolean alterarSerie(Serie s) throws Exception {
+        // Testar se o objeto Série é válido
+        if (s == null) 
+            throw new Exception ("Série nula!");
+
+        // Atualizar o Episódio a partir do ArquivoEpisodio e retornar o seu status
+        return arqSerie.update(s);
+    }
+
+    /*
+     * buscarSerie - Função para buscar uma Série a partir do seu ID
+     * @param id - ID da Série a ser buscada
+     * @return s - Objeto da Série buscada
+     */
     public Serie buscarSerie(int id) throws Exception {
+        // Buscar a Série a partir do ArquivoSerie
         Serie s = arqSerie.read(id);
 
+        // Retornar o objeto da Série
         return s;
     }
 
-    public List<Serie> buscarSerie(String entrada) throws Exception {
+    /*
+     * buscarSerie - Função para buscar uma ou mais Séries cujo nome inicia com uma determinada String
+     * @param entrada - String a ser buscada
+     * @param series - Lista de Séries cujo nome inicia com a String determinada
+     */
+    public List<Serie> buscarSerie(String entrada) throws Exception {    
+        // Ler todos as Sèries cujo nome inicia com a String determinada a partir do ArquivoSerie
         Serie[] arraySeries = arqSerie.readNome(entrada);
+
+        //Converter Serie[] para List<Serie>
         List<Serie> series = new ArrayList<Serie>( Arrays.asList(arraySeries) );
 
+        // Retornar lista de Séries
         return series;
     }
 
+    /*
+     * buscarSerieEpisodios - Função para buscar uma lista com todos os Episódios de uma determinada Série
+     * @param id - ID da Série a ser buscada
+     * @return episodios - Lista de Episódios da Série buscada
+     */
     public List<Episodio> buscarSerieEpisodios(int id) throws Exception {
-        Episodio[] arrayEpisodios = arqSerie.readEpisodios(id); 
-        List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
+        // Ler todos os Episódios da Série atual a partir do ArquivoSerie
+        Episodio[] arrayEpisodios = arqSerie.readEpisodios(id);
 
+        //Converter Episodio[] para List<Episodio>
+        List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
+        
+        // Retornar lista de Episódios
         return episodios;
     }
 
+    /*
+     * buscarSerieEpisodiosPorTemporada - Função para buscar todos os Episódios de uma Série de uma determinada Temporada
+     * @param id - ID da Série a ser buscada
+     * @param temporada - Temporada da Série a ser buscada
+     * @return episodios - Lista de Episódios que pertencem à temporada da Série especificada
+     */
     public List<Episodio> buscarSerieEpisodiosPorTemporada(int id, int temporada) throws Exception {
+        // Ler todos os Episódios da Série atual a partir do ArquivoSerie
         Episodio[] arrayEpisodios = arqSerie.readEpisodios(id); 
+
+        //Converter Episodio[] para List<Episodio>
         List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
 
+        // Iterar sobre a lista de todos os Episódios encontrados na Série
         int i = 0;
         for (Episodio e : episodios) {
-            if (e.getTemporada() != temporada)
+            // Testar se o Episódio pertence à temporada especificada
+            if (e.getTemporada() != temporada) // Remover da lista
                 episodios.remove(i);
             i++;
         }
 
+        // Retornar lista de Episódios
         return episodios;
     }
 
+    /*
+     * validarSerie - Função estática para verificar se uma Série existe a partir do seu ID
+     * @param id - ID da Série a ser testada
+     * @return resposta - True se a Série existir, False caso contrário
+     */
     public static boolean validarSerie(int id) {
+        // Definir variável de resposta
         boolean resposta;
 
+        // Iniciar bloco try-catch
         try {
+            // Definir instância do ArquivoSerie (Necessário, pois o método é estático, então o atributo arqSerie não é instanciado)
             ArquivoSerie arqSerie = new ArquivoSerie();
+
+            // Testar se a Série foi encontrada
             if (arqSerie.read(id) != null)
                 resposta = true;   
             else
@@ -99,6 +160,7 @@ public class ControleSerie {
             resposta = false;
         }
 
+        // Retornar
         return resposta;
     }
 }  
