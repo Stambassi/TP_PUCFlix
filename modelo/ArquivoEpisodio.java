@@ -1,11 +1,11 @@
 package modelo;
+
 import entidades.Episodio;
 import controle.ControleSerie;
+import aeds3.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import aeds3.*;
 
 public class ArquivoEpisodio extends Arquivo<Episodio> {
     Arquivo<Episodio> arqEpisodio;
