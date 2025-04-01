@@ -37,16 +37,16 @@ public class ArquivoSerie extends Arquivo<Serie> {
         return id;
     }
 
-    public Episodio[] readEpisodios(int IDSerie) throws Exception {
-        List<Episodio> episodios = new List<Episodio>()
+    public List<Episodio> readEpisodios(int IDSerie) throws Exception {
+        List<Episodio> episodios = new ArrayList<Episodio>();
         if (!ControleSerie.validarSerie(IDSerie))
             throw new Exception("IDSerie inválido");
         ParIDID pii = indiceSerieEpisodio.read();
         while (pii != null){
-            episodios.append(pii)
+            episodios.add(pii);
             pii = indiceSerieEpisodio.read();
         }
-        return episodios
+        return episodios;
     }
     
     public Serie[] readNome(String nome) throws Exception {
