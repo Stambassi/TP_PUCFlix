@@ -16,11 +16,13 @@ public class VisaoEpisodio {
     
     ControleEpisodio controle;
     Serie serie;
+    int temp;
     private static Scanner console = new Scanner(System.in);
 
     public VisaoEpisodio(Serie s) throws Exception {
         controle = new ControleEpisodio(s);
         serie = s;
+        temp = 0;
     }
 
     public void menu() {
@@ -49,21 +51,66 @@ public class VisaoEpisodio {
    
                switch (opcao) {
                    case 1:
-                       incluirSerie();
+                       incluirEpisodio();
                        break;
                    case 2:
-                       excluirSerie();
+                       excluirEpisodio();
                        break;
                    case 3:
-                       alterarSerie();
+                       alterarEpisodio();
                        break;
                    case 4:
-                       buscarUmaSerie();
+                       buscarUmEpisodio();
                        break;
                    case 5:
-                       buscarEpisodios();
+                       entrarTemporada();
                        break;
                    case 0:
+                       break;
+                   default:
+                       System.out.println("Opção inválida!");
+                       break;
+               }
+   
+           } while (opcao != 0);
+        }
+       
+    }
+
+    public void menuTemporada() {
+
+        int opcao;
+        if(serie == null){
+            System.out.println("ERRO: Série não encontrada");
+        } else {
+            do {
+                System.out.println("\n\nPUCFlix v");
+               System.out.println("--------------------------");
+               System.out.println("> Início > Episódios > "+serie.getNome()+" > Temporada: "+this.temp);
+               System.out.println("\n1 - Incluir");
+               System.out.println("2 - Buscar");
+               System.out.println("3 - Excluir");
+               System.out.println("0 - Sair");
+   
+               System.out.print("\nOpção: ");
+               try {
+                   opcao = Integer.valueOf(console.nextLine());
+               } catch(NumberFormatException e) {
+                   opcao = -1;
+               }
+   
+               switch (opcao) {
+                   case 1:
+                       incluirEpisodio();
+                       break;
+                   case 2:
+                       buscarUmEpisodio();
+                       break;
+                    case 3:
+                       excluirEpisodio();
+                       break;
+                   case 0:
+                        this.temp = 0;
                        break;
                    default:
                        System.out.println("Opção inválida!");
@@ -84,7 +131,7 @@ public class VisaoEpisodio {
         LocalDate dataLancamento;
         float duracao; // em minutos
         int nota; // 0 a 10
-        List<String> diretores;
+        List<String> diretores = new ArrayList<String>();
         String diretor;
         boolean dadosCorretos = false;
         String regex = "^\\d{4}-\\d{2}-\\d{2}$";
@@ -99,18 +146,23 @@ public class VisaoEpisodio {
                 System.err.println("O nome deve ter no mínimo 4 caracteres.");
         } while(!dadosCorretos);
 
-        dadosCorretos = false;
-        do {
-            System.out.print("Qual a Temporada? ");
-            if (console.hasNextInt()) {
-                temporada = console.nextInt();
-                if(0 <= temporada && temporada <= 127)
-                    dadosCorretos = true;
-            }else{
-                System.err.println("A Temporada deve ser entre 0 e 127.");
-            }
-            console.nextLine();
-        } while(!dadosCorretos);
+        if (this.temp > 0){
+            temporada = this.temp;
+        } else {
+            dadosCorretos = false;
+            do {
+                System.out.print("Qual a Temporada? ");
+                if (console.hasNextInt()) {
+                    temporada = console.nextInt();
+                    if(0 < temporada && temporada <= 127)
+                        dadosCorretos = true;
+                }else{
+                    System.err.println("A Temporada deve ser entre 1 e 127.");
+                }
+                console.nextLine();
+            } while(!dadosCorretos);
+        }
+        
 
         
         do {
@@ -201,10 +253,10 @@ public class VisaoEpisodio {
 
     }
 
-    public Episodio buscarUmaEpisodio(){
+    public Episodio buscarUmEpisodio(){
         int opcao;
-        Episodio s = null;
-        Episodio[] Episodios;
+        Episodio ep = null;
+        List<Episodio> episodios;
         boolean dadosCorretos;
         System.out.println("Como deseja fazer a busca? ");
         System.out.println("1 - Buscar por nome");
@@ -219,14 +271,14 @@ public class VisaoEpisodio {
 
         switch(opcao){
             case 1:
-                Episodios = buscarEpisodioNome();
+                episodios = buscarEpisodioNome();
                 dadosCorretos = false;
-                if (Episodios.length > 1){
+                if (episodios.size() > 1){
                     opcao = 0;
                     do{
-                        System.out.println("Escolha uma Série: ");
-                        int n = 0
-                        for(Episodio l : Episodios) {
+                        System.out.println("Escolha um Episódio: ");
+                        int n = 0;
+                        for(Episodio l : episodios) {
                             System.out.println((n++)+" - "+l.getNome());
                         }
                         try {
@@ -235,33 +287,33 @@ public class VisaoEpisodio {
                             opcao = -1;
                         }
 
-                        if(0 <= opcao && opcao <= Episodios.length){
-                            s = Episodios[opcao];
-                            mostraEpisodio(s);
+                        if(0 <= opcao && opcao <= episodios.size()){
+                            ep = episodios.get(opcao);
+                            mostraEpisodio(ep);
                             dadosCorretos = true;
                         } else {
-                            System.out.println("Série não está presente na lista")
+                            System.out.println("Episódio não está presente na lista");
                         }
-                    } while(dadosCorretos!)
+                    } while(!dadosCorretos);
                    
                 } else {
-                    s = Episodios[0]
+                    ep = episodios.get(0);
                 }
                 break;
             case 2: 
-                s = buscarEpisodioID();
+                ep = buscarEpisodioID();
                 break;
             default:
                 break;
         }
 
-        return s;
+        return ep;
 
     }
 
     public Episodio buscarEpisodioID() {
-        System.out.println("\nBusca de Episodio por ID");
-        int id;
+        System.out.println("\nBusca de Episódio por ID");
+        int id = 0;
         boolean dadosCorretos = false;
 
         do {
@@ -282,83 +334,90 @@ public class VisaoEpisodio {
                 mostraEpisodio(Episodio);  // Exibe os detalhes do Episodio encontrado
                 return Episodio;
             } else {
-                System.out.println("Série não encontrada.");
+                System.out.println("Episódio não encontrado.");
                 return null;
             }
         } catch(Exception e) {
-            System.out.println("Erro do sistema. Não foi possível buscar a Série!");
+            System.out.println("Erro do sistema. Não foi possível buscar o Episódio!");
             e.printStackTrace();
             return null;
         }
     }   
 
-    public Episodio[] buscarEpisodioNome() {
-        System.out.println("\nBusca de série por nome");
+    public List<Episodio> buscarEpisodioNome() {
+        System.out.println("\nBusca de episódio por nome");
         System.out.print("\nNome: ");
         String nome = console.nextLine();  // Lê o título digitado pelo usuário
-
+        List<Episodio> episodios = null;
         if(nome.isEmpty())
-            return; 
+            return episodios; 
 
         try {
-            Episodio[] Episodios = controle.buscarEpisodioNome(nome);  // Chama o método de leitura da classe Arquivo
-            if (Episodios.length>0) {
-                return Episodios;
+            episodios = controle.buscarEpisodio(nome);  // Chama o método de leitura da classe Arquivo
+            if (episodios.size()>0) {
+                return episodios;
             } else {
-                System.out.println("Nenhuma Série encontrado.");
+                System.out.println("Nenhum Episódio encontrado.");
                 return null;
             }
         } catch(Exception e) {
-            System.out.println("Erro do sistema. Não foi possível buscar as Séries!");
+            System.out.println("Erro do sistema. Não foi possível buscar os Episódios!");
             e.printStackTrace();
+            return null;
         }
     }   
 
 
     public void incluirEpisodio() {
-        System.out.println("\nInclusão de Episodio");
-        Episodio s = lerEpisodio()
-        System.out.print("\nConfirma a inclusão da Episodio? (S/N) ");
+        if(this.temp > 0){
+            System.out.println("\nInclusão de Episódio - "+this.temp+" Temporada");
+        } else {
+            System.out.println("\nInclusão de Episodio");
+        }
+        Episodio ep = lerEpisodio();
+        System.out.print("\nConfirma a inclusão do Episodio? (S/N) ");
         char resp = console.nextLine().charAt(0);
         if(resp=='S' || resp=='s') {
             try {
-                controle.incluirEpisodio(s);
-                System.out.println("Episodio incluído com sucesso.");
+                controle.incluirEpisodio(ep);
+                System.out.println("Episódio incluído com sucesso.");
             } catch(Exception e) {
-                System.out.println("Erro do sistema. Não foi possível incluir a Episodio!");
+                System.out.println("Erro do sistema. Não foi possível incluir o Episódio!");
             }
         }
+        
+        
     }
 
     public void alterarEpisodio() {
         System.out.println("\nAlteração de Episodio");
         try {
             // Tenta ler o Episodio com o ID fornecido
-            Episodio s = buscarUmaEpisodio();
-            if (s != null) {
-                mostraEpisodio(s);  // Exibe os dados do Episodio para confirmação
-                Episodio nova = lerEpisodio()
-                nova.setID(s.getID())
+            Episodio ep = buscarUmEpisodio();
+            if (ep != null) {
+                mostraEpisodio(ep);  // Exibe os dados do Episodio para confirmação
+                Episodio novo = lerEpisodio();
+                novo.setID(ep.getID());
                 // Confirmação da alteração
                 System.out.print("\nConfirma as alterações? (S/N) ");
                 char resp = console.next().charAt(0);
                 if (resp == 'S' || resp == 's') {
                     // Salva as alterações no arquivo
-                    boolean alterado = controle.alterarEpisodio(nova);
+                    boolean alterado = controle.alterarEpisodio(novo);
                     if (alterado) {
-                        System.out.println("Série alterado com sucesso.");
+                        System.out.println("Episódio alterado com sucesso.");
                     } else {
-                        System.out.println("Erro ao alterar a Série.");
+                        System.out.println("Erro ao alterar o Episódio.");
                     }
                 } else {
                     System.out.println("Alterações canceladas.");
                 }
                  console.nextLine(); // Limpar o buffer 
             } else {
-                System.out.println("Episodio não encontrado.");
+                System.out.println("Episódio não encontrado.");
             }
         } catch (Exception e) {
-            System.out.println("Erro do sistema. Não foi possível alterar a Série!");
+            System.out.println("Erro do sistema. Não foi possível alterar o Episódio!");
             e.printStackTrace();
         }
         
@@ -369,20 +428,20 @@ public class VisaoEpisodio {
         System.out.println("\nExclusão de Série");
         try {
             // Tenta ler o Episodio com o ID fornecido
-            Episodio s = buscarUmaEpisodio();
-            if (s != null) {
-                System.out.println("Episodio encontrada:");
-                mostraEpisodio(s);  // Exibe os dados do Episodio para confirmação
+            Episodio ep = buscarUmEpisodio();
+            if (ep != null) {
+                System.out.println("Episódio encontrado:");
+                mostraEpisodio(ep);  // Exibe os dados do Episodio para confirmação
 
-                System.out.print("\nConfirma a exclusão do Episodio? (S/N) ");
+                System.out.print("\nConfirma a exclusão do Episódio? (S/N) ");
                 char resp = console.next().charAt(0);  // Lê a resposta do usuário
 
                 if (resp == 'S' || resp == 's') {
-                    boolean excluido = controle.delete(isbn);  // Chama o método de exclusão no arquivo
+                    boolean excluido = controle.excluirEpisodio(ep);  // Chama o método de exclusão no arquivo
                     if (excluido) {
-                        System.out.println("Episodio excluído com sucesso.");
+                        System.out.println("Episódio excluído com sucesso.");
                     } else {
-                        System.out.println("Erro ao excluir o Episodio.");
+                        System.out.println("Erro ao excluir o Episódio.");
                     }
                     
                 } else {
@@ -390,10 +449,10 @@ public class VisaoEpisodio {
                 }
                 console.nextLine(); // Limpar o buffer 
             } else {
-                System.out.println("Episodio não encontrado.");
+                System.out.println("Episódio não encontrado.");
             }
         } catch (Exception e) {
-            System.out.println("Erro do sistema. Não foi possível excluir o Episodio!");
+            System.out.println("Erro do sistema. Não foi possível excluir o Episódio!");
             e.printStackTrace();
         }
     }
@@ -404,8 +463,32 @@ public class VisaoEpisodio {
         }
     }
 
+    public void entrarTemporada(){
+        int temporada = 0;
+        boolean dadosCorretos = false;
+        do {
+            System.out.print("Qual a Temporada? ");
+            if (console.hasNextInt()) {
+                temporada = console.nextInt();
+                if(0 < temporada && temporada <= 127)
+                    dadosCorretos = true;
+            }else{
+                System.err.println("A Temporada deve ser entre 1 e 127.");
+            }
+            console.nextLine();
+        } while(!dadosCorretos);
+        try{
+            controle.buscarEpisodioTemporada(temporada);
+            this.temp = temporada;
+            menuTemporada();
+        } catch (Exception e){
+            System.out.println("Temporada não existe na Série ("+serie.getNome()+")");
+        }
+    }
+
     public void povoar() throws Exception {
-       controle.povoar();
+        System.out.println("Função povoar em construção..."); 
+    //    controle.povoar();
     }
 
 }
