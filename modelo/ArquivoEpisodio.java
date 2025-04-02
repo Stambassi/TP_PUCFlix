@@ -2,14 +2,14 @@ package modelo;
 
 import entidades.Episodio;
 import controle.ControleSerie;
-import aeds3.*;
+import aeds3.Arquivo;
+import aeds3.ArvoreBMais;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ArquivoEpisodio extends Arquivo<Episodio> {
     Arquivo<Episodio> arqEpisodio;
-    HashExtensivel<ParIDID> indiceSerieEpisodio;
+    ArvoreBMais<ParIDID> indiceSerieEpisodio;
     ArvoreBMais<ParNomeID> indiceNome;
 
     /*
@@ -20,18 +20,18 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         super("episodio", Episodio.class.getConstructor());
 
         // Chamar o construtor do índice de Série e Episódio
-        indiceSerieEpisodio = new HashExtensivel<>(
-            ParIDID.class.getConstructor(),
-            4,
-            "./dados/indices/indiceSerieEpisodio.d.db",
-            "./dados/indices/indiceSerieEpisodio.c.db"
-            );
+        indiceSerieEpisodio = new ArvoreBMais<> (
+            ParIDID.class.getConstructor(), 
+            5, 
+            "./dados/indice/indiceSerieEpisodio.db"
+        );
 
-        // Chamar o construtor do índice de Nome do episódio e seu ID
-        indiceNome = new ArvoreBMais<>(
+        // Chamar o construtor do índice de Nome do Episódio e seu ID
+        indiceNome = new ArvoreBMais<> (
             ParNomeID.class.getConstructor(), 
             5, 
-            "./dados/"+nomeEntidade+"/indiceNome.db");
+            "./dados/"+nomeEntidade+"/indiceNome.db"
+        );
     }
 
     /*
@@ -67,6 +67,70 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
     }
 
     /*
+     * delete - Função para excluir um Episódio a partir de um ID
+     * @param id - ID do Episódio a ser excluído
+     * @return resposta - True se sucedido, False se contrário
+     */
+    @Override
+    public boolean delete(int id) throws Exception {
+        // Definir variável de resposta
+        boolean resposta;
+
+        // Ler o Episódio a partir da superclasse
+        Episodio e = super.read(id);   
+
+        // Excluir o Episódio a partir da superclasse e testar o seu status para excluir os índices
+        if(super.delete(id))
+            resposta = indiceSerieEpisodio.delete(new ParIDID(e.getIDSerie(), id)) && indiceNome.delete(new ParNomeID(e.getNome(), id));
+        else
+            resposta = false;
+
+        // Retornar resposta
+        return resposta;
+    }
+
+    /*
+     * update - Função para atualizar um Episódio
+     * @param novoEpisodio - Objeto já alterado do Episódio
+     * @return boolean - True se sucedido, False se contrário
+     */
+    @Override
+    public boolean update(Episodio novoEpisodio) throws Exception {
+        // Definir variável de resposta
+        boolean resposta;
+
+        // Ler o Episódio antigo a partir da superclasse
+        Episodio e = super.read(novoEpisodio.getID()); 
+
+        // Atualizar o Episódio a partir da superclasse e testar o seu status
+        if(super.update(novoEpisodio)) {
+            // Testar se houve alteração no ID
+            if( e.getIDSerie() != novoEpisodio.getIDSerie() ) {
+                // Remover o Par Série-Episódio anterior
+                indiceSerieEpisodio.delete( new ParIDID(e.getIDSerie(), e.getID()) );
+
+                // Recriar o índice com o ID alterado
+                indiceSerieEpisodio.create( new ParIDID(novoEpisodio.getIDSerie(), e.getID()) );
+            }
+
+            // Testar se houve alteração no Nome
+            if( !e.getNome().equals(novoEpisodio.getNome()) ) {
+                // Remover o Par Nome-Episódio anterior
+                indiceNome.delete(new ParNomeID(e.getNome(), e.getID()));
+
+                // Recriar o índice com o Nome alterado
+                indiceNome.create(new ParNomeID(novoEpisodio.getNome(), novoEpisodio.getID()));
+            }
+            resposta = true;
+        } else {
+            resposta = false;
+        }
+
+        // Retornar
+        return resposta;
+    }
+
+    /*
      * readNome - Função para buscar todos os Episódios cujo nome inicia com uma String especificada
      * @param nome - String a ser buscada
      * @return episodios - Array de Episódios encontrados
@@ -76,8 +140,8 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         if (nome.length() == 0)
             throw new Exception("Nome inválido!");
 
-        // Definir Lista de Par Nome-ID que possuem a String especificada
-        ArrayList<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
+        // Definir Lista de Pares Nome-ID que possuem a String especificada
+        List<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
 
         // Testar se há algum Par encontrado
         if ( !(pnis.size() > 0) )
@@ -89,49 +153,10 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         // Iterar sobre a lista de Pares Nome-ID a adicionar os Episódios correspondentes ao array de Episódios
         int i = 0;
         for(ParNomeID pni: pnis) 
-            episodios[i++] = read(pni.getID());
+            episodios[i++] = this.read(pni.getID());
 
         // Retornar
         return episodios;
-    }
-
-    /*
-     * delete - Função para excluir um Episódio a partir de um ID
-     * @param id - ID do Episódio a ser excluído
-     * @return boolean - True se sucedido, False se contrário
-     */
-    @Override
-    public boolean delete(int id) throws Exception {
-        Episodio e = super.read(id);   // na superclasse
-        if(e != null) {
-            if(super.delete(id))
-                return indiceSerieEpisodio.delete(ParIDID.hash(e.getID())) && indiceNome.delete(new ParNomeID(e.getNome(), id));
-        }
-        return false;
-    }
-
-    /*
-     * update - Função para atualizar um Episódio
-     * @param novoEpisodio - Objeto já alterado do Episódio
-     * @return boolean - True se sucedido, False se contrário
-     */
-    @Override
-    public boolean update(Episodio novoEpisodio) throws Exception {
-        Episodio e = super.read(novoEpisodio.getID());    // na superclasse
-        if(e != null) {
-            if(super.update(novoEpisodio)) {
-                if( e.getID() != novoEpisodio.getID() ) {
-                    indiceSerieEpisodio.delete( ParIDID.hashCode(e.getID()) );
-                    indiceSerieEpisodio.create( new ParIDID(novoEpisodio.getID(), e.getID()) );
-                }
-                if(!e.getNome().equals(novoEpisodio.getNome())) {
-                    indiceNome.delete(new ParNomeID(e.getNome(), e.getID()));
-                    indiceNome.create(new ParNomeID(novoEpisodio.getNome(), novoEpisodio.getID()));
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     /*
@@ -139,21 +164,28 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
      * @param IDSerie - ID da Série dos episódios a serem procurados
      * @return episodios - Lista de Episódios que pertencem à Série especificada
      */
-    public List<Episodio> readIDSerie(int IDSerie) throws Exception {
+    public Episodio[] readIDSerie(int IDSerie) throws Exception {
+        // Testar se o ID da Série procurada é válido
         if( !ControleSerie.validarSerie(IDSerie) )
             throw new Exception("IDSerie inválido");
 
-        List<ParIDID> piis = indiceSerieEpisodio.read(ParIDID.hashCode(IDSerie));
+        // Definir Lista de Pares Série-Episódio que possuem o ID da Série especificada
+        List<ParIDID> piis = indiceSerieEpisodio.read(new ParIDID(IDSerie, -1));
 
-        if(piis != null) {
-            List<Episodio> episodios = new ArrayList<Episodio>();
-            for (ParIDID pii : piis) {
-                episodios.add( super.read(pii.getID()) );
-            }
-            return episodios;
-        }
-        else 
-            return null;
+        // Testar se há algum Par encontrado
+        if ( !(piis.size() > 0) )
+            throw new Exception ("Não foi encontrado nenhum Episódio pertencente à Série procurada!");
+        
+        // Definir array de Episódios com o tamanho do número de pares
+        Episodio[] episodios = new Episodio[piis.size()];
+
+        // Iterar sobre a lista de Pares Série-Episódio a adicionar os Episódios correspondentes ao array de Episódios
+        int i = 0;
+        for(ParIDID pii: piis) 
+            episodios[i++] = this.read(pii.getIDEpisodio());
+
+        // Retornar
+        return episodios;
     }
 
 }

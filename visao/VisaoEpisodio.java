@@ -127,10 +127,10 @@ public class VisaoEpisodio {
     public Episodio lerEpisodio(){
         String nome;
         int IDSerie = serie.getID();
-        int temporada;
-        LocalDate dataLancamento;
-        float duracao; // em minutos
-        int nota; // 0 a 10
+        int temporada = 0;
+        LocalDate dataLancamento = null;
+        float duracao = 0; // em minutos
+        int nota = 0; // 0 a 10
         List<String> diretores = new ArrayList<String>();
         String diretor;
         boolean dadosCorretos = false;
@@ -224,7 +224,17 @@ public class VisaoEpisodio {
             }
         } while(!dadosCorretos);
 
-       return new Episodio(IDSerie,nome,temporada, dataLancamento, duracao, nota, diretores);
+        Episodio ep = null;
+
+        // 
+        try {
+           ep = new Episodio(IDSerie, nome, temporada, dataLancamento, duracao, nota, diretores);
+        } catch (Exception e) {
+            System.err.println("[ERRO]: " + e.getMessage());
+        }
+
+        //Retornar
+        return ep;
     }
 
     public void escolhasBusca(){

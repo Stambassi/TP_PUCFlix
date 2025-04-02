@@ -2,9 +2,9 @@ package modelo;
 
 import java.io.*;
 
-import aeds3.RegistroHashExtensivel;
+import aeds3.RegistroArvoreBMais;
 
-public class ParIDID implements RegistroHashExtensivel {
+public class ParIDID implements RegistroArvoreBMais<ParIDID> {
     private int IDSerie;
     private int IDEpisodio;
     private final short TAMANHO = 8;
@@ -52,15 +52,6 @@ public class ParIDID implements RegistroHashExtensivel {
     }
 
     /**
-     * Retorna um código hash para o objeto, baseado nos IDs
-     * @return (int) Código hash
-     */
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(IDSerie) ^ Integer.hashCode(IDEpisodio);
-    }
-
-    /**
      * Converte o objeto para um array de bytes
      * @return (byte[]) Representação serializada do objeto
      */
@@ -81,6 +72,23 @@ public class ParIDID implements RegistroHashExtensivel {
         DataInputStream dis = new DataInputStream(bais);
         this.IDSerie = dis.readInt();
         this.IDEpisodio = dis.readInt();
+    }
+
+    /**
+     * Compara este objeto com outro ParIDID baseado no ID do Episódio
+     * @param obj (ParIDID): Objeto a ser comparado
+     * @return (int) Valor negativo, zero ou positivo conforme a ordem crescente de IDs
+     */
+    public int compareTo(ParIDID obj) {
+        return this.IDEpisodio - obj.IDEpisodio; 
+    }
+
+    /**
+     * Retorna uma cópia do objeto
+     * @return (ParIDID) Clone do objeto atual
+     */
+    public ParIDID clone() {
+        return new ParIDID(this.IDSerie, this.IDEpisodio);
     }
 
     /**

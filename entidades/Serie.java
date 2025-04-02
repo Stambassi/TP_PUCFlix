@@ -19,7 +19,7 @@ public class Serie implements EntidadeArquivo {
      * Construtor padrão: inicializa os atributos com valores padrão
      */
     public Serie() {
-        this(-1, "", 0, "", "", 0, new ArrayList<>(), "");
+        this(-1, "", 0, "", "", 0, new ArrayList<String>(), "");
     }
 
     /**

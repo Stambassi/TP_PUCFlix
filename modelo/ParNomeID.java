@@ -28,6 +28,14 @@ public class ParNomeID implements RegistroArvoreBMais<ParNomeID> {
         this.ID = ID;
     }
 
+    public String getNome() {
+        return this.nome;
+    }
+
+    public int getID() {
+        return this.ID;
+    }
+
     /**
      * Retorna o tamanho do registro
      * @return (short) Tamanho em bytes
@@ -85,10 +93,5 @@ public class ParNomeID implements RegistroArvoreBMais<ParNomeID> {
     @Override
     public String toString() {
         return "(" + this.nome + "; " + this.ID + ")";
-    }
-
-    public int getID() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getID'");
     }
 }

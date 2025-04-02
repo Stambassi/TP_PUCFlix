@@ -11,22 +11,24 @@ import aeds3.*;
 
 public class ArquivoSerie extends Arquivo<Serie> {
     Arquivo<Serie> arqSerie;
-    HashExtensivel<ParIDID> indiceSerieEpisodio;
+    ArvoreBMais<ParIDID> indiceSerieEpisodio;
     ArvoreBMais<ParNomeID> indiceNome;
 
     /*
      * Construtor da classe ArquivoSerie
      */
     public ArquivoSerie() throws Exception {
+        // Chamar o construtor da classe herdada
         super("serie", Serie.class.getConstructor());
 
-        indiceSerieEpisodio = new HashExtensivel<>(
-            ParIDID.class.getConstructor(),
-            4,
-            "./dados/indices/indiceSerieEpisodio.d.db",
-            "./dados/indices/indiceSerieEpisodio.c.db"
-            );
+        // Chamar o construtor do índice de Série e Episódio
+        indiceSerieEpisodio = new ArvoreBMais<> (
+            ParIDID.class.getConstructor(), 
+            5, 
+            "./dados/indice/indiceSerieEpisodio.db"
+        );
 
+        // Chamar o construtor do índice de Nome da Série e seu ID
         indiceNome = new ArvoreBMais<>(
             ParNomeID.class.getConstructor(), 
             5, 
@@ -51,6 +53,83 @@ public class ArquivoSerie extends Arquivo<Serie> {
     }
 
     /*
+     * read - Função para ler uma Série do Banco de Dados a partir do seu ID
+     * @param id - ID da Série a ser lida
+     * @return serie - Série encontrada
+     */
+    @Override
+    public Serie read(int id) throws Exception {
+        // Ler a Série a partir do ArquivoSerie
+        Serie serie = arqSerie.read(id);
+
+        // Retornar a Série buscada
+        return serie;
+    }
+
+    /*
+     * delete - Função para excluir uma Série a partir de um ID
+     * @param id - ID da Série a ser excluída
+     * @return boolean - True se sucedido, False se contrário
+     */
+    @Override
+    public boolean delete(int id) throws Exception {
+        // Definir variável de resposta
+        boolean resposta;
+
+        // Ler a Série a partir da superclasse
+        Serie s = super.read(id);  
+
+        // Definir Lista de Pares Série-Episódio que possuem o ID da Série especificada
+        List<ParIDID> piis = indiceSerieEpisodio.read(new ParIDID(id, -1));
+
+        // Testar se há algum Par encontrado
+        if ( !(piis.size() > 0) )
+            throw new Exception ("Não foi possível excluir a Série, pois há Episódios vinculados a ela!");
+
+        // Excluir a Série a partir da superclasse e testar o seu status para excluir os índices
+        if(super.delete(id)){
+            resposta = indiceNome.delete(new ParNomeID(s.getNome(), id));
+        } else {
+            resposta = false;
+        }
+         
+        // Retornar
+        return resposta;
+    }
+
+    /*
+     * update - Função para atualizar uma Série
+     * @param novaSerie - Objeto já alterado da Série
+     * @return boolean - True se sucedido, False se contrário
+     */
+    @Override
+    public boolean update(Serie novaSerie) throws Exception {
+        // Definir variável de resposta
+        boolean resposta;
+
+        // Ler a Série antiga a partir da superclasse
+        Serie s = super.read(novaSerie.getID());
+
+        // Atualizar a Série a partir da superclasse e testar o seu status
+        if(super.update(novaSerie)) {
+            // Testar se houve alteração no Nome 
+            if( !s.getNome().equals(novaSerie.getNome()) ) {
+                // Remover o Par Nome-Série anterior
+                indiceNome.delete(new ParNomeID(s.getNome(), s.getID()));
+
+                // Recriar o pindice com o Nome alterado
+                indiceNome.create(new ParNomeID(novaSerie.getNome(), novaSerie.getID()));
+            }
+            resposta = true;
+        } else {
+            resposta = false;
+        }
+
+        // Retornar
+        return resposta;
+    }
+
+    /*
      * readEpisodios - Função para retornar todos os Episódios que pertencem à Série especificada
      * @param id - ID da Série
      * @return episodios - Array dos Episódios que pertencem à Série especificada
@@ -64,7 +143,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
             throw new Exception("ID da Série inválido");
 
         // Buscar o ParIDID de Série-Episódio a partir do ID da Série
-        List<ParIDID> piis = indiceSerieEpisodio.read();
+        List<ParIDID> piis = indiceSerieEpisodio.read(new ParIDID(id, -1));
 
         // Definir array de Episódios com o tamanho da lista de Pares Série-Episódio
         Episodio[] episodios = new Episodio[piis.size()];
@@ -112,49 +191,4 @@ public class ArquivoSerie extends Arquivo<Serie> {
         // Retornar
         return series;
     }
-
-    /*
-     * delete - Função para excluir uma Série a partir de um ID
-     * @param id - ID da Série a ser excluída
-     * @return boolean - True se sucedido, False se contrário
-     */
-    @Override
-    public boolean delete(int id) throws Exception {
-        Serie e = super.read(id);   // na superclasse
-        if(e != null) {
-            if(super.delete(id)){
-                ParIDID pii = indiceSerieEpisodio.read(id); // ter certeza que a série não possui episodios
-                if(pii != null){
-                    return indiceSerieEpisodio.delete(ParIDID.hash(e.getID())) && indiceNome.delete(new ParNomeID(e.getNome(), id));
-                }
-            }
-                
-        }
-        return false;
-    }
-
-    /*
-     * update - Função para atualizar uma Série
-     * @param novaSerie - Objeto já alterado da Série
-     * @return boolean - True se sucedido, False se contrário
-     */
-    @Override
-    public boolean update(Serie novaSerie) throws Exception {
-        Serie e = super.read(novaSerie.getID());    // na superclasse
-        if(e != null) {
-            if(super.update(novaSerie)) {
-                if( e.getID() != novaSerie.getID() ) {
-                    indiceSerieEpisodio.delete( ParIDID.hash(e.getID()) );
-                    indiceSerieEpisodio.create( new ParIDID(novaSerie.getID(), e.getID()) );
-                }
-                if(!e.getNome().equals(novaSerie.getNome())) {
-                    indiceNome.delete(new ParNomeID(e.getNome(), e.getID()));
-                    indiceNome.create(new ParNomeID(novaSerie.getNome(), novaSerie.getID()));
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

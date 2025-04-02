@@ -1,31 +1,35 @@
 package visao;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+
+import entidades.Serie;
+import controle.ControleSerie;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import entidades.Serie;
-import modelo.ArquivoSerie;
-import controle.ControleSerie;
-
 public class VisaoSerie {
     
-    ControleSerie controle;
+    ControleSerie controleSerie;
+
     private static Scanner console = new Scanner(System.in);
 
+    /*
+     * Construtor da classe VisaoSerie
+     */
     public VisaoSerie() throws Exception {
-        controle = new ControleSerie();
+        controleSerie = new ControleSerie();
     }
 
     public void menu() {
-
+        // Definir variável de controle
         int opcao;
+
+        // Iniciar bloco de seleção
         do {
             System.out.println("\n\nPUCFlix v");
             System.out.println("--------------------------");
-            System.out.println("> Início > Séries");
-            System.out.println("\n1 - Incluir");
+            System.out.println("> Início > Séries\n");
+            System.out.println("1 - Incluir");
             System.out.println("2 - Excluir");
             System.out.println("3 - Alterar");
             System.out.println("4 - Buscar séries");
@@ -33,12 +37,15 @@ public class VisaoSerie {
             System.out.println("0 - Sair");
 
             System.out.print("\nOpção: ");
+
+            // Tentar ler um inteiro do Scanner
             try {
                 opcao = Integer.valueOf(console.nextLine());
             } catch(NumberFormatException e) {
                 opcao = -1;
             }
 
+            // Testar a opção escolhida
             switch (opcao) {
                 case 1:
                     incluirSerie();
@@ -50,7 +57,7 @@ public class VisaoSerie {
                     alterarSerie();
                     break;
                 case 4:
-                    buscarUmaSerie();
+                    escolhasBusca();
                     break;
                 case 5:
                     buscarEpisodios();
@@ -58,123 +65,215 @@ public class VisaoSerie {
                 case 0:
                     break;
                 default:
-                    System.out.println("Opção inválida!");
+                    System.err.println("[ERRO]: Opção inválida!");
                     break;
             }
 
         } while (opcao != 0);
     }
 
+    /*
+     * incluirSerie - Função para interagir e confirmar a inclusão de uma Série
+     */
+    public void incluirSerie() {
+        // Exibir título da ação
+        System.out.println("\nInclusão de Serie");
 
+        // Ler dados da Série a partir do terminal
+        Serie s = lerSerie();
 
-    public Serie lerSerie(){
+        // Confirmar a inclusão da Série
+        System.out.print("\nConfirma a inclusão da Serie? (S/N) ");
+
+        // Identificar escolha
+        char resp = console.nextLine().charAt(0);
+
+        // Testar escolha
+        if (resp == 'S' || resp == 's') {
+            // Tentar incluir a Série a partir do ControleSerie
+            try {
+                controleSerie.incluirSerie(s);
+                System.out.println("Serie incluído com sucesso.");
+            } catch(Exception e) {
+                System.out.println("Erro do sistema. Não foi possível incluir a Serie!");
+            }
+        }
+    }
+
+    /*
+     * lerSerie - Função para iniciar a operação de leitura de uma Série
+     * @return
+     */
+    public Serie lerSerie() {
+        // Definir atributos de uma série
         String nome;
         int anoLancamento = 0;
         String sinopse;
         String streaming;
         int nota = 0;
-        ArrayList<String> criadores = new ArrayList<>();
+        ArrayList<String> criadores = new ArrayList<String>();
         String criador;
         String genero;
+
+        // Definir variável de controle
         boolean dadosCorretos = false;
+
+        // Iniciar bloco de seleção
         do {
+            // Ler o nome da Série
             System.out.print("Qual o nome da Série? ");
+
             nome = console.nextLine();
-            if(nome.length()>=4)
+
+            // Testar se a entrada é válida
+            if (nome.length() >= 4)
                 dadosCorretos = true;
             else
-                System.err.println("O nome deve ter no mínimo 4 caracteres.");
-        } while(!dadosCorretos);
+                System.err.println("[ERRO]: O nome deve ter no mínimo 4 caracteres!");
+        } while (!dadosCorretos);
 
+        // Reiniciar variável de controle
         dadosCorretos = false;
+
+        // Iniciar bloco de seleção
         do {
+            // Ler o ano de lançamento da Série
             System.out.print("Qual o ano de lançamento (yyyy)? ");
+
             if (console.hasNextInt()) {
                 anoLancamento = console.nextInt();
+
+                // Testar se o ano é válido
                 if(1000 <= anoLancamento && anoLancamento <= 9999)
                     dadosCorretos = true;
-            }else{
-                System.err.println("O ano deve ser de 4 dígitos.");
+            } else {
+                System.err.println("[ERRO]: O ano deve ser de 4 dígitos!");
             }
-            console.nextLine();
-        } while(!dadosCorretos);
 
+            // Limpar o buffer
+            console.nextLine();
+        } while (!dadosCorretos);
+
+        // Reiniciar variável de controle
         dadosCorretos = false;
+
+        // Iniciar bloco de seleção
         do {
+            // Ler a sinopse da Série
             System.out.print("Qual a sinopse? ");
+
             sinopse = console.nextLine();
-            if(sinopse.length()>=4)
+
+            // Testar o tamanho da sinopse da Série
+            if(sinopse.length() >= 4)
                 dadosCorretos = true;
             else
-                System.err.println("A sinopse deve ter no mínimo 4 caracteres.");
+                System.err.println("[ERRO]: A sinopse deve ter no mínimo 4 caracteres!");
         } while(!dadosCorretos);
 
+        // Reiniciar a variável de controle
         dadosCorretos = false;
+
+        // Iniciar bloco de seleção
         do {
+            // Ler o streaming da Série
             System.out.print("Qual o streaming? ");
             streaming = console.nextLine();
-            if(streaming.length()>=4)
+
+            // Testar o tamanho do streaming da Série
+            if(streaming.length() >= 4)
                 dadosCorretos = true;
             else
-                System.err.println("O streaming deve ter no mínimo 4 caracteres.");
+                System.err.println("[ERRO]: O streaming deve ter no mínimo 4 caracteres!");
         } while(!dadosCorretos);
 
+        // Reiniciar a variável de controle
         dadosCorretos = false;
+
+        // Iniciar bloco de seleção
         do {
+            // Ler a nota da Série 
             System.out.print("Qual a nota (0 a 10)? ");
+
             if (console.hasNextInt()) {
                 nota = console.nextInt();
-                if(0 <= nota && nota <= 10)
+
+                // Testar nota da Sèrie
+                if (0 <= nota && nota <= 10)
                     dadosCorretos = true;
-            }else{
-                System.err.println("A nota deve ser entre 0 e 10.");
+            } else {
+                System.err.println("[ERRO]: A nota deve ser entre 0 e 10!");
             }
+
+            // Limpar o buffer
             console.nextLine();
         } while(!dadosCorretos);
 
+        // Reiniciar a variável de controle
         dadosCorretos = false;
         do {
-            System.out.print("Quais são os criadores (digite FIM para parar)? ");
+            // Ler os criadores da Série
+            System.out.print("Quais são os criadores? (digite FIM para parar)");
+
             criador = console.nextLine();
-            if(criador.equals("FIM") && criadores.size() > 0){
+
+            // Testar a leitura dos criadores
+            if (criador.equals("FIM") && criadores.size() > 0){
                 dadosCorretos =  true;
             } else {
-                if (criadores.size() == 0) {
-                    System.err.println("A Série deve conter pelo menos um criador");
-                } else if(criador.length()>=4){
+                // Testar se os criadores da série são válidos
+                if (criadores.size() >= 4) {
                     criadores.add(criador);
+                } else if(criador.length() == 0) {
+                    System.err.println("[ERRO]: A Série deve conter pelo menos um criador!");
                 } else {
-                    System.err.println("O criador deve ter no mínimo 4 caracteres.");
+                    System.err.println("[ERRO]: O criador deve ter no mínimo 4 caracteres.");
                 }
             }
         } while(!dadosCorretos);
 
+        // Reiniciar a variável de controle
         dadosCorretos = false;
+
+        // Iniciar bloco de seleção
         do {
+            // Ler o gênero da Série
             System.out.print("Qual o gênero? ");
+
             genero = console.nextLine();
-            if(genero.length()>=4)
+
+            // Testar o gênero da Série
+            if (genero.length() >= 4)
                 dadosCorretos = true;
             else
-                System.err.println("O gênero deve ter no mínimo 4 caracteres.");
+                System.err.println("[ERRO]: O gênero deve ter no mínimo 4 caracteres!");
         } while(!dadosCorretos);
 
-       return new Serie(nome, anoLancamento, sinopse, streaming, nota, criadores, genero);
+        // Retornar objeto da Série preenchido com as informações!
+        return new Serie(nome, anoLancamento, sinopse, streaming, nota, criadores, genero);
     }
 
-    public void escolhasBusca(){
+    /*
+     * escolhasBusca - Função para inicar a operação de seleção do método de busca de uma Série
+     */
+    public void escolhasBusca() {
+        // Definir variável de controle
         int opcao;
+
+        // Mostrar opções 
         System.out.println("Como deseja fazer a busca? ");
         System.out.println("1 - Buscar por nome");
         System.out.println("2 - Buscar por ID");
         System.out.println("0 - Sair");
 
+        // Tentar ler opção do console
         try {
             opcao = Integer.valueOf(console.nextLine());
         } catch(NumberFormatException e) {
             opcao = -1;
         }
 
+        // Testar a opção escolhida 
         switch(opcao){
             case 1:
                 buscarSerieNome();
@@ -183,65 +282,104 @@ public class VisaoSerie {
                 buscarSerieID();
                 break;
             default:
+                System.err.println("[ERRO]: Opção inválida!");
                 break;
         }
 
     }
 
-    public Serie buscarUmaSerie(){
+    /*
+     * buscarUmaSerie - Função para iniciar a operação de seleção do método de busca de uma Série (nome ou ID)
+     * @return s - Série selecionada
+     */
+    public Serie buscarUmaSerie() {
+        // Definir variável de controle
         int opcao;
+
+        // Definir a variável Série a ser retornada
         Serie s = null;
+
+        // Definir lista auxiliar de Séries
         List<Serie> series;
+
+        // Definir variável de controle
         boolean dadosCorretos;
+
+        // Exibir opções de seleção
         System.out.println("Como deseja fazer a busca? ");
         System.out.println("1 - Buscar por nome");
         System.out.println("2 - Buscar por ID");
         System.out.println("0 - Sair");
 
+        // Tentar ler a opção do console
         try {
             opcao = Integer.valueOf(console.nextLine());
         } catch(NumberFormatException e) {
             opcao = -1;
         }
 
-        switch(opcao){
+        // Testar a opção
+        switch (opcao){
             case 1:
+                // Buscar todas as Séries pelo nome
                 series = buscarSerieNome();
+
+                // Reiniciar variável de controle
                 dadosCorretos = false;
-                if (series.size() > 1){
+
+                // Testar lista de Séries encontradas pelo nome
+                if (series.size() <= 1) {
+                    s = series.get(0);
+                } else {
+                    // Reiniciar variável de controle  
                     opcao = 0;
-                    do{
+
+                    // Iniciar bloco de seleção
+                    do {
+                        // Exibir todas as Séries encontradas pelo nome
                         System.out.println("Escolha uma Série: ");
+
                         int n = 0;
-                        for(Serie l : series) {
-                            System.out.println((n++)+" - "+l.getNome());
-                        }
+
+                        for (Serie l : series) 
+                            System.out.println((n++) + " - " + l.getNome());
+
+                        // Tentar ler a opção do console
                         try {
                             opcao = Integer.valueOf(console.nextLine());
                         } catch(NumberFormatException e) {
                             opcao = -1;
                         }
 
-                        if(0 <= opcao && opcao <= series.size()){
+                        // Testar a opção
+                        if (0 <= opcao && opcao <= series.size()) {
+                            // Identificar a Série selecionada pela sua posição
                             s = series.get(opcao);
+
+                            // Mostrar a Série selecionada
                             mostraSerie(s);
+
+                            // Atualizar variável de controle
                             dadosCorretos = true;
                         } else {
-                            System.out.println("Série não está presente na lista");
+                            System.err.println("[ERRO]: Série não está presente na lista!");
                         }
-                    } while(!dadosCorretos);
-                   
-                } else {
-                    s = series.get(0);
+                    } while(!dadosCorretos);        
                 }
                 break;
             case 2: 
+                // Buscar Série pelo ID
                 s = buscarSerieID();
+
+                // Mostrar a Série selecionada
+                mostraSerie(s);
                 break;
             default:
+                System.err.println("[ERRO]: Opção inválida!");
                 break;
         }
 
+        // Retornar Série selecionada
         return s;
 
     }
@@ -264,7 +402,7 @@ public class VisaoSerie {
         } while (!dadosCorretos);
 
         try {
-            Serie serie = controle.buscarSerie(id);  // Chama o método de leitura da classe Arquivo
+            Serie serie = controleSerie.buscarSerie(id);  // Chama o método de leitura da classe Arquivo
             if (serie != null) {
                 mostraSerie(serie);  // Exibe os detalhes do Serie encontrado
                 return serie;
@@ -283,11 +421,11 @@ public class VisaoSerie {
         System.out.println("\nBusca de série por nome");
         System.out.print("\nNome: ");
         String nome = console.nextLine();  // Lê o título digitado pelo usuário
-        List<Serie> series = new ArrayList<>();
+        List<Serie> series = new ArrayList<Serie>();
         if(nome.isEmpty())
             return series; 
         try {
-            series = controle.buscarSerie(nome);  // Chama o método de leitura da classe Arquivo
+            series = controleSerie.buscarSerie(nome);  // Chama o método de leitura da classe Arquivo
             if (series.size()>0) {
                 return series;
             } else {
@@ -297,24 +435,11 @@ public class VisaoSerie {
         } catch(Exception e) {
             System.out.println("Erro do sistema. Não foi possível buscar as Séries!");
             e.printStackTrace();
+            return null;
         }
     }   
 
 
-    public void incluirSerie() {
-        System.out.println("\nInclusão de Serie");
-        Serie s = lerSerie();
-        System.out.print("\nConfirma a inclusão da Serie? (S/N) ");
-        char resp = console.nextLine().charAt(0);
-        if(resp=='S' || resp=='s') {
-            try {
-                controle.incluirSerie(s);
-                System.out.println("Serie incluído com sucesso.");
-            } catch(Exception e) {
-                System.out.println("Erro do sistema. Não foi possível incluir a Serie!");
-            }
-        }
-    }
 
     public void alterarSerie() {
         System.out.println("\nAlteração de Serie");
@@ -330,7 +455,7 @@ public class VisaoSerie {
                 char resp = console.next().charAt(0);
                 if (resp == 'S' || resp == 's') {
                     // Salva as alterações no arquivo
-                    boolean alterado = controle.alterarSerie(nova);
+                    boolean alterado = controleSerie.alterarSerie(nova);
                     if (alterado) {
                         System.out.println("Série alterado com sucesso.");
                     } else {
@@ -364,7 +489,7 @@ public class VisaoSerie {
                 char resp = console.next().charAt(0);  // Lê a resposta do usuário
 
                 if (resp == 'S' || resp == 's') {
-                    boolean excluido = controle.excluirSerie(s.getID());  // Chama o método de exclusão no arquivo
+                    boolean excluido = controleSerie.excluirSerie(s.getID());  // Chama o método de exclusão no arquivo
                     if (excluido) {
                         System.out.println("Serie excluído com sucesso.");
                     } else {
