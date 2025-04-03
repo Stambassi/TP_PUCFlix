@@ -70,8 +70,9 @@ public class ArquivoSerie extends Arquivo<Serie> {
         // Definir Lista de Pares Série-Episódio que possuem o ID da Série especificada
         List<ParIDID> piis = indiceSerieEpisodio.read(new ParIDID(id, -1));
 
+        //System.out.println(piis);
         // Testar se há algum Par encontrado
-        if ( !(piis.size() > 0) )
+        if ( piis.size() > 0 )
             throw new Exception ("Não foi possível excluir a Série, pois há Episódios vinculados a ela!");
 
         // Excluir a Série a partir da superclasse e testar o seu status para excluir os índices
@@ -163,9 +164,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
 
         // Definir lista de Par Nome-ID que possuem a String especificada
         ParNomeID pnid = new ParNomeID(nome, -1);
-        System.out.println(pnid);
         ArrayList<ParNomeID> pnis = indiceNome.read(pnid);
-        System.out.println(pnis);
 
         // Testar se há algum Par encontrado
         if ( !(pnis.size() > 0) )
