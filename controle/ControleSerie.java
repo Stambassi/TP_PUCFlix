@@ -73,6 +73,8 @@ public class ControleSerie {
      */
     public Serie buscarSerie(int id) throws Exception {
         // Buscar a Série a partir do ArquivoSerie
+        if (arqSerie == null)
+            System.out.println("[ERRO]: Arquivo nulo");
         Serie s = arqSerie.read(id);
 
         // Retornar o objeto da Série
@@ -162,5 +164,60 @@ public class ControleSerie {
 
         // Retornar
         return resposta;
+    }
+
+    public void povoar(){
+        try{
+            ArrayList<String> criadores = new ArrayList<String>();
+            criadores.add("Charlie Brooker");
+            incluirSerie(new Serie("Black Mirror", 2011, 
+            "Contos de ficção científica que refletem o lado negro das telas e da tecnologia", 
+            "Netflix", 9, criadores, 
+            "Ficção científica"));
+
+            criadores.clear();
+            criadores.add("Vince Gilligan");
+            incluirSerie(new Serie("Breaking Bad", 2008, 
+            "Um professor de química diagnosticado com câncer de pulmão se transforma em fabricante e vendedor de metanfetamina, a fim de garantir o futuro da sua família", 
+            "Netflix", 10, criadores, 
+            "Drug Crime"));
+
+            criadores.clear();
+            criadores.add("Craig Mazin");
+            incluirSerie(new Serie("Chernobyl", 2019, 
+            "Minissérie em cinco partes que conta a história do pior acidente causado pelo homem na história, o desastre da Usina Nuclear de Chernobyl", 
+            "HBO MAX", 9, criadores, 
+            "Drama"));
+
+            criadores.clear();
+            criadores.add("Hiromo Arakawa");
+            criadores.add("Makoto Inoue");
+            incluirSerie(new Serie("Fullmetal Alchemist", 2003, 
+            "Quando um fracassado ritul alquímico deixa os irmãos Edward e Alphonse Elric com corpos severamente danificados, eles começam a procurar a única coisa que pode salvá-los", 
+            "Crunchyroll", 8, criadores, 
+            "Anime"));
+
+            criadores.clear();
+            criadores.add("David Crane");
+            criadores.add("Marta Kauffman");
+            incluirSerie(new Serie("Friends", 1994, 
+            "Relata a vida pessoal de seis amigos em seus 30 anos na cidade de Manhattan", 
+            "HBO MAX", 6, criadores, 
+            "Feel-good Romance"));
+
+            criadores.clear();
+            criadores.add("Lauren LeFranc");
+            incluirSerie(new Serie("Pinguim", 2024, 
+            "Acompanha a transformação de Oz Cobb de um desconhecido desfigurado em um famoso gângster de Gotham", 
+            "HBO MAX", 8, criadores, 
+            "Gangster"));
+
+            System.out.println("Séries povoadas!");
+
+        } catch (Exception e){
+            System.err.println("[ERRO]");
+            e.printStackTrace();
+        }
+        
     }
 }  

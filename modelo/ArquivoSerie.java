@@ -20,7 +20,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
     public ArquivoSerie() throws Exception {
         // Chamar o construtor da classe herdada
         super("serie", Serie.class.getConstructor());
-
+        //arqSerie = new Arquivo<Serie>();
         // Chamar o construtor do índice de Série e Episódio
         indiceSerieEpisodio = new ArvoreBMais<> (
             ParIDID.class.getConstructor(), 
@@ -46,24 +46,12 @@ public class ArquivoSerie extends Arquivo<Serie> {
         int id = super.create(s);
 
         // Criar o índice Nome-Série
-        indiceNome.create(new ParNomeID(s.getNome(), id));
+        ParNomeID pnid = new ParNomeID(s.getNome(), id);
+        System.out.println(pnid);
+        indiceNome.create(pnid);
 
         // Retornar o ID da Série
         return id;
-    }
-
-    /*
-     * read - Função para ler uma Série do Banco de Dados a partir do seu ID
-     * @param id - ID da Série a ser lida
-     * @return serie - Série encontrada
-     */
-    @Override
-    public Serie read(int id) throws Exception {
-        // Ler a Série a partir do ArquivoSerie
-        Serie serie = arqSerie.read(id);
-
-        // Retornar a Série buscada
-        return serie;
     }
 
     /*
@@ -174,7 +162,10 @@ public class ArquivoSerie extends Arquivo<Serie> {
             throw new Exception("Nome inválido!");
 
         // Definir lista de Par Nome-ID que possuem a String especificada
-        ArrayList<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
+        ParNomeID pnid = new ParNomeID(nome, -1);
+        System.out.println(pnid);
+        ArrayList<ParNomeID> pnis = indiceNome.read(pnid);
+        System.out.println(pnis);
 
         // Testar se há algum Par encontrado
         if ( !(pnis.size() > 0) )

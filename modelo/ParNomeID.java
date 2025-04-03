@@ -1,6 +1,9 @@
 package modelo;
 
 import java.io.*;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
+import java.util.regex.Pattern;
 
 import aeds3.RegistroArvoreBMais;
 
@@ -75,7 +78,17 @@ public class ParNomeID implements RegistroArvoreBMais<ParNomeID> {
      * @return (int) Valor negativo, zero ou positivo conforme a ordem lexicográfica
      */
     public int compareTo(ParNomeID obj) {
-        return this.nome.compareTo(obj.nome);
+        String var2 = transforma(this.nome);
+        String var3 = transforma(obj.nome);
+        if (var3.length() > var2.length()) {
+           var3 = var3.substring(0, var2.length());
+        }
+  
+        if (var2.compareTo(var3) == 0) {
+           return this.ID == -1 ? 0 : this.ID - obj.ID;
+        } else {
+           return var2.compareTo(var3);
+        }
     }
 
     /**
@@ -94,4 +107,10 @@ public class ParNomeID implements RegistroArvoreBMais<ParNomeID> {
     public String toString() {
         return "(" + this.nome + "; " + this.ID + ")";
     }
+
+    public static String transforma(String var0) {
+      String var1 = Normalizer.normalize(var0, Form.NFD);
+      Pattern var2 = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+      return var2.matcher(var1).replaceAll("").toLowerCase();
+   }
 }

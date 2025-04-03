@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import entidades.Episodio;
 import entidades.Serie;
-import modelo.ArquivoEpisodio;
 import controle.ControleEpisodio;
 
 public class VisaoEpisodio {

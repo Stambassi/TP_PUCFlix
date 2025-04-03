@@ -148,7 +148,7 @@ public class ControleEpisodio {
     }
 
     /*
-     * buscarEpisodio - Função para buscar um Episódio de uma Série a partir do seu ID
+     * buscarEpisodio - Função para buscar um Episódio a partir do seu ID
      * @param id - ID do Episódio a ser buscado
      * @return e - Objeto do Episódio buscado
      */
@@ -211,10 +211,6 @@ public class ControleEpisodio {
             i++;
         }
 
-        // Testar se a temporada não possui nenhum episódio
-        if (episodios.size() < 1) 
-            throw new Exception("Temporada inválida!");
-
         // Retornar os Episódios que pertencem à temporada da Série atual
         return episodios;        
     }
@@ -230,7 +226,7 @@ public class ControleEpisodio {
         Episodio e = arqEpisodio.read(id);
 
         // Testar se o Episódio pertence à Série da instância atual
-        if (e.getIDSerie() != this.serie.getID()) 
+        if ( e.getIDSerie() != this.serie.getID() ) 
             throw new Exception ("Episódio não pertence à Série atual!");
 
         // Testar se o Episódio pertence à temporada da Série da instância atual

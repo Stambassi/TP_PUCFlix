@@ -64,8 +64,11 @@ public class Arquivo<T extends EntidadeArquivo> {
 
     public T read(int id) throws Exception {
         ParIDEndereco pie = indiceDireto.read(id);
-        if(pie==null)
+        if(pie==null){
+            System.out.println("ParIDEndereco nulo");
             return null;
+
+        }
         long endereco = pie.getEndereco();
         if(endereco==-1)
             return null;

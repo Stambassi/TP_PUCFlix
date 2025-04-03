@@ -153,6 +153,9 @@ public class ArvoreBMais<T extends RegistroArvoreBMais<T>> {
         nomeArquivo = na;
 
         // Abre (ou cria) o arquivo, escrevendo uma raiz empty, se necessário.
+        File f = new File("./dados/indice");
+        if(!f.exists())
+            f.mkdir();
         arquivo = new RandomAccessFile(nomeArquivo, "rw");
         if (arquivo.length() < 16) {
             arquivo.writeLong(-1); // raiz empty

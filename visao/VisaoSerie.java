@@ -57,7 +57,7 @@ public class VisaoSerie {
                     alterarSerie();
                     break;
                 case 4:
-                    escolhasBusca();
+                    buscarUmaSerie();
                     break;
                 case 5:
                     buscarEpisodios();
@@ -213,7 +213,7 @@ public class VisaoSerie {
         dadosCorretos = false;
         do {
             // Ler os criadores da Série
-            System.out.print("Quais são os criadores? (digite FIM para parar)");
+            System.out.print("Quais são os criadores? (digite FIM para parar) ");
 
             criador = console.nextLine();
 
@@ -222,7 +222,7 @@ public class VisaoSerie {
                 dadosCorretos =  true;
             } else {
                 // Testar se os criadores da série são válidos
-                if (criadores.size() >= 4) {
+                if (criador.length() >= 4) {
                     criadores.add(criador);
                 } else if(criador.length() == 0) {
                     System.err.println("[ERRO]: A Série deve conter pelo menos um criador!");
@@ -258,33 +258,9 @@ public class VisaoSerie {
      */
     public void escolhasBusca() {
         // Definir variável de controle
-        int opcao;
-
-        // Mostrar opções 
-        System.out.println("Como deseja fazer a busca? ");
-        System.out.println("1 - Buscar por nome");
-        System.out.println("2 - Buscar por ID");
-        System.out.println("0 - Sair");
-
-        // Tentar ler opção do console
-        try {
-            opcao = Integer.valueOf(console.nextLine());
-        } catch(NumberFormatException e) {
-            opcao = -1;
-        }
-
-        // Testar a opção escolhida 
-        switch(opcao){
-            case 1:
-                buscarSerieNome();
-                break;
-            case 2: 
-                buscarSerieID();
-                break;
-            default:
-                System.err.println("[ERRO]: Opção inválida!");
-                break;
-        }
+        Serie s = null;
+        s = buscarUmaSerie();
+        System.out.println(s);
 
     }
 
@@ -395,8 +371,8 @@ public class VisaoSerie {
                 id = console.nextInt();
                 if(id > 0)
                     dadosCorretos = true;
-            }else{
-                System.err.println("O ID deve ser maior que 0");
+                else 
+                    System.err.println("O ID deve ser maior que 0");
             }
             console.nextLine();
         } while (!dadosCorretos);
@@ -517,7 +493,7 @@ public class VisaoSerie {
 
     public void povoar() throws Exception {
         System.out.println("Função povoar em construção..."); 
-       // controle.povoar();
+        controleSerie.povoar();
     }
 
     public void buscarEpisodios() {
