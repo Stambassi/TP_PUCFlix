@@ -18,6 +18,10 @@ public class VisaoEpisodio {
     int temp;
     private static Scanner console = new Scanner(System.in);
 
+    public VisaoEpisodio() throws Exception {
+        controle = new ControleEpisodio();
+    }
+
     public VisaoEpisodio(Serie s) throws Exception {
         controle = new ControleEpisodio(s);
         serie = s;
@@ -194,13 +198,13 @@ public class VisaoEpisodio {
 
         dadosCorretos = false;
         do {
-            System.out.print("Qual a duração (minutos)? ");
+            System.out.print("Qual a nota (0 a 10)? ");
             if (console.hasNextInt()) {
-                duracao = console.nextFloat();
-                if(0 < duracao)
+                duracao = console.nextInt();
+                if(0 <= nota && nota <= 10)
                     dadosCorretos = true;
             }else{
-                System.err.println("O episódio deve ter mais que 0 minutos");
+                System.err.println("A nota deve ser entre 0 e 10");
             }
             console.nextLine();
         } while(!dadosCorretos);
@@ -213,12 +217,12 @@ public class VisaoEpisodio {
             if(diretor.equals("FIM") && diretores.size() > 0){
                 dadosCorretos =  true;
             } else {
-                if (diretores.size() == 0) {
-                    System.err.println("A Série deve conter pelo menos um criador");
-                } else if(diretores.size() >=4){
+                if (diretor.length() >= 4) {
                     diretores.add(diretor);
+                } else if(diretor.length() == 0) {
+                    System.err.println("[ERRO]: A Série deve conter pelo menos um diretor!");
                 } else {
-                    System.err.println("O criador deve ter no mínimo 4 caracteres.");
+                    System.err.println("[ERRO]: O diretor deve ter no mínimo 4 caracteres.");
                 }
             }
         } while(!dadosCorretos);
@@ -236,86 +240,94 @@ public class VisaoEpisodio {
         return ep;
     }
 
-    public void escolhasBusca(){
+    public Episodio buscarUmEpisodio() {
+        // Definir variável de controle
         int opcao;
-        System.out.println("Como deseja fazer a busca? ");
-        System.out.println("1 - Buscar por nome");
-        System.out.println("2 - Buscar por ID");
-        System.out.println("0 - Sair");
 
-        try {
-            opcao = Integer.valueOf(console.nextLine());
-        } catch(NumberFormatException e) {
-            opcao = -1;
-        }
-
-        switch(opcao){
-            case 1:
-                buscarEpisodioNome();
-                break;
-            case 2: 
-                buscarEpisodioID();
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    public Episodio buscarUmEpisodio(){
-        int opcao;
+        // Definir a variável Série a ser retornada
         Episodio ep = null;
-        List<Episodio> episodios;
+
+        // Definir lista auxiliar de Séries
+        List<Episodio> eps;
+
+        // Definir variável de controle
         boolean dadosCorretos;
+
+        // Exibir opções de seleção
         System.out.println("Como deseja fazer a busca? ");
         System.out.println("1 - Buscar por nome");
         System.out.println("2 - Buscar por ID");
         System.out.println("0 - Sair");
 
+        // Tentar ler a opção do console
         try {
             opcao = Integer.valueOf(console.nextLine());
         } catch(NumberFormatException e) {
             opcao = -1;
         }
 
-        switch(opcao){
+        // Testar a opção
+        switch (opcao){
             case 1:
-                episodios = buscarEpisodioNome();
-                dadosCorretos = false;
-                if (episodios.size() > 1){
-                    opcao = 0;
-                    do{
-                        System.out.println("Escolha um Episódio: ");
-                        int n = 0;
-                        for(Episodio l : episodios) {
-                            System.out.println((n++)+" - "+l.getNome());
-                        }
-                        try {
-                            opcao = Integer.valueOf(console.nextLine());
-                        } catch(NumberFormatException e) {
-                            opcao = -1;
-                        }
+                // Buscar todas as Séries pelo nome
+                eps = buscarEpisodioNome();
 
-                        if(0 <= opcao && opcao <= episodios.size()){
-                            ep = episodios.get(opcao);
-                            mostraEpisodio(ep);
-                            dadosCorretos = true;
-                        } else {
-                            System.out.println("Episódio não está presente na lista");
-                        }
-                    } while(!dadosCorretos);
-                   
-                } else {
-                    ep = episodios.get(0);
-                }
+                // Reiniciar variável de controle
+                dadosCorretos = false;
+
+                // Testar lista de Séries encontradas pelo nome
+                if(eps != null){
+                    if (eps.size() <= 1) {
+                        ep = eps.get(0);
+                    } else {
+                        // Reiniciar variável de controle  
+                        opcao = 0;
+    
+                        // Iniciar bloco de seleção
+                        do {
+                            // Exibir todas as Séries encontradas pelo nome
+                            System.out.println("Escolha um Episódio: ");
+    
+                            int n = 0;
+    
+                            for (Episodio i : eps) 
+                                System.out.println((n++) + " - " + i.getNome());
+    
+                            // Tentar ler a opção do console
+                            try {
+                                opcao = Integer.valueOf(console.nextLine());
+                            } catch(NumberFormatException e) {
+                                opcao = -1;
+                            }
+    
+                            // Testar a opção
+                            if (0 <= opcao && opcao <= eps.size()) {
+                                // Identificar a Série selecionada pela sua posição
+                                ep = eps.get(opcao);
+    
+    
+    
+                                // Atualizar variável de controle
+                                dadosCorretos = true;
+                            } else {
+                                System.err.println("[ERRO]: Série não está presente na lista!");
+                            }
+                        } while(!dadosCorretos);        
+                    }
+                } 
                 break;
             case 2: 
+                // Buscar Série pelo ID
                 ep = buscarEpisodioID();
                 break;
             default:
+                System.err.println("[ERRO]: Opção inválida!");
                 break;
         }
 
+        // Mostrar a Série selecionada
+        mostraEpisodio(ep);
+        // Retornar Série selecionada
         return ep;
 
     }
@@ -496,8 +508,7 @@ public class VisaoEpisodio {
     }
 
     public void povoar() throws Exception {
-        System.out.println("Função povoar em construção..."); 
-    //    controle.povoar();
+        controle.povoar();
     }
 
 }

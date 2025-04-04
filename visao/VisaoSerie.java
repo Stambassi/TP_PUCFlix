@@ -663,7 +663,6 @@ public class VisaoSerie {
     }
 
     public void povoar() throws Exception {
-        System.out.println("Função povoar em construção..."); 
         controleSerie.povoar();
     }
 

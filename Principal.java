@@ -88,8 +88,9 @@ public class Principal {
     }
     public static void povoar(){
         try{
-            // (new VisaoEpisodio(null)).povoar();
             (new VisaoSerie()).povoar();
+            (new VisaoEpisodio()).povoar();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

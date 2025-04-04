@@ -6,6 +6,8 @@ import entidades.Serie;
 import entidades.Episodio;
 
 import java.util.List;
+import java.util.ResourceBundle.Control;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,6 +16,9 @@ public class ControleEpisodio {
     private ArquivoEpisodio arqEpisodio;
     private Serie serie;
 
+    public ControleEpisodio() throws Exception{
+        this.arqEpisodio = new ArquivoEpisodio();
+    }
     /*
      * Construtor da classe ControleEpisodio
      * @param serie - Série referente à classe atual
@@ -43,7 +48,7 @@ public class ControleEpisodio {
             throw new Exception ("Episódio nulo!");
 
         // Testar se o Episódio pertence à Série da instância atual
-        if ( e.getIDSerie() != this.serie.getID() ) 
+        if ( this.serie != null &&  e.getIDSerie() != this.serie.getID() ) 
             throw new Exception ("Episódio não pertence à Série atual!");
 
         // Criar o Episódio a partir do ArquivoEpisódio
@@ -262,5 +267,27 @@ public class ControleEpisodio {
 
         // Retornar
         return resposta;
+    }
+
+    public void povoar(){
+        try{
+            ArrayList<String> criadores = new ArrayList<String>();
+            criadores.add("Charlie Brooker");
+            incluirEpisodio(new Episodio(1, "Common People",7,LocalDate.of(2025,04,10),44,5,criadores));
+
+            // criadores.clear();
+            // criadores.add("Vince Gilligan");
+            // incluirSerie(new Serie("Breaking Bad", 2008, 
+            // "Um professor de química diagnosticado com câncer de pulmão se transforma em fabricante e vendedor de metanfetamina, a fim de garantir o futuro da sua família", 
+            // "Netflix", 10, criadores, 
+            // "Drug Crime"));
+
+            System.out.println("Episódios povoadas!");
+
+        } catch (Exception e){
+            System.err.println("[ERRO]");
+            e.printStackTrace();
+        }
+        
     }
 }

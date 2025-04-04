@@ -141,8 +141,10 @@ public class Episodio implements EntidadeArquivo {
         str.append(String.format("| Duração...........: %.2f minutos%-" + len + "s |\n", duracao, ""));
         str.append(String.format("| Nota..............: %-" + maxLength + "d |\n", nota));
 
-        for (int i = 0; i < diretores.size(); i++) 
-            str.append(String.format("| Diretor(%d)........: %-"+maxLength+"s |\n", i + 1, diretores.get(i)));
+        if(diretores != null){
+            for (int i = 0; i < diretores.size(); i++) 
+                str.append(String.format("| Diretor(%d)........: %-"+maxLength+"s |\n", i + 1, diretores.get(i)));
+        }
 
         // Rodapé
         str.append("+" + "-".repeat(maxLength + 22) + "+\n");
@@ -166,14 +168,14 @@ public class Episodio implements EntidadeArquivo {
         for (String diretor : diretores) {
             dos.writeUTF(diretor);
         }
-
+        System.out.println("ToByteArray: "+baos.toByteArray().length);
         return baos.toByteArray();
     }
 
     public void fromByteArray(byte[] vb) throws Exception {
         ByteArrayInputStream bais = new ByteArrayInputStream(vb);
         DataInputStream dis = new DataInputStream(bais);
-
+        System.out.println("FromByteArray: "+vb.length);
         ID = dis.readInt();
         IDSerie = dis.readInt();
         nome = dis.readUTF();
@@ -182,8 +184,15 @@ public class Episodio implements EntidadeArquivo {
         duracao = dis.readFloat();
         nota = dis.readByte();
         byte length = dis.readByte();
+        // System.out.println(length);
+        // short tam = 0;
         for (byte i = 0; i < length; i++) {
             diretores.add(dis.readUTF());
+            // tam = dis.readShort();
+            // System.out.println("tam: "+tam);
+            // for(int y = 0; y < tam; y++){
+            //     System.out.println(y);
+            // }
         }
     }
 }

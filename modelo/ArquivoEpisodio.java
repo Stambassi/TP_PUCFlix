@@ -53,20 +53,6 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
     }
 
     /*
-     * read - Função para ler um Episódio do Banco de Dados a partir do seu ID
-     * @param id - ID do Episódio a ser lido
-     * @return episodio - Episódio encontrado
-     */
-    @Override
-    public Episodio read(int id) throws Exception {
-        // Ler o episódio a partir do ArquivoEpisodio
-        Episodio episodio = arqEpisodio.read(id);
-
-        // Retornar o Episódio buscado
-        return episodio;
-    }
-
-    /*
      * delete - Função para excluir um Episódio a partir de um ID
      * @param id - ID do Episódio a ser excluído
      * @return resposta - True se sucedido, False se contrário
@@ -141,8 +127,10 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
             throw new Exception("Nome inválido!");
 
         // Definir Lista de Pares Nome-ID que possuem a String especificada
-        List<ParNomeID> pnis = indiceNome.read(new ParNomeID(nome, -1));
-
+        ParNomeID pnid = new ParNomeID(nome, -1);
+        // System.out.println(pnid);
+        List<ParNomeID> pnis = indiceNome.read(pnid);
+        System.out.println(pnis + ", tamanho: "+pnis.size());
         // Testar se há algum Par encontrado
         if ( !(pnis.size() > 0) )
             throw new Exception ("Não foi encontrado nenhum Episódio com o nome buscado!");
@@ -152,8 +140,10 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
 
         // Iterar sobre a lista de Pares Nome-ID a adicionar os Episódios correspondentes ao array de Episódios
         int i = 0;
-        for(ParNomeID pni: pnis) 
+        for(ParNomeID pni: pnis) {
             episodios[i++] = this.read(pni.getID());
+        }
+        System.out.println(episodios);
 
         // Retornar
         return episodios;
