@@ -1,4 +1,7 @@
 import java.util.Scanner;
+
+import controle.ControleSerie;
+import controle.ControleEpisodio;
 import visao.*;
 import entidades.*;
 
@@ -87,10 +90,12 @@ public class Principal {
         } while (opcao != 0);
     }
     public static void povoar(){
-        try{
-            (new VisaoSerie()).povoar();
-            (new VisaoEpisodio()).povoar();
+        try {
+            ControleSerie controleSerie = new ControleSerie();
+            controleSerie.povoar();
 
+            ControleEpisodio controleEpisodio = new ControleEpisodio(controleSerie.buscarSerie(4));
+            controleEpisodio.povoar();
         } catch (Exception e) {
             e.printStackTrace();
         }

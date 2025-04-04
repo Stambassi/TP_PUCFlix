@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.ArrayList;
 
 import aeds3.EntidadeArquivo;
 import controle.ControleSerie;
@@ -127,7 +128,7 @@ public class Episodio implements EntidadeArquivo {
         int maxLength = Math.max(20, nome.length()); 
 
         // Cabeçalho
-        str.append("+" + "-".repeat(maxLength + 22) + "+\n");
+        str.append("\n+" + "-".repeat(maxLength + 22) + "+\n");
 
         // Encontrar tamanho do espaçamento em "Duração"
         int len = Math.max(0, maxLength - 8 - String.format("%.2f", duracao).length());
@@ -147,7 +148,7 @@ public class Episodio implements EntidadeArquivo {
         }
 
         // Rodapé
-        str.append("+" + "-".repeat(maxLength + 22) + "+\n");
+        str.append("+" + "-".repeat(maxLength + 22) + "+");
 
         // Retornar
         return str.toString();
@@ -164,18 +165,20 @@ public class Episodio implements EntidadeArquivo {
         dos.writeInt( (int) dataLancamento.toEpochDay() );
         dos.writeFloat(duracao);
         dos.writeByte(nota);
-        dos.writeByte(diretores.size());        
+
+        if (diretores == null) diretores = new ArrayList<String>();
+        dos.writeByte(diretores.size());   
         for (String diretor : diretores) {
             dos.writeUTF(diretor);
         }
-        System.out.println("ToByteArray: "+baos.toByteArray().length);
+
         return baos.toByteArray();
     }
 
     public void fromByteArray(byte[] vb) throws Exception {
         ByteArrayInputStream bais = new ByteArrayInputStream(vb);
         DataInputStream dis = new DataInputStream(bais);
-        System.out.println("FromByteArray: "+vb.length);
+
         ID = dis.readInt();
         IDSerie = dis.readInt();
         nome = dis.readUTF();
@@ -183,16 +186,11 @@ public class Episodio implements EntidadeArquivo {
         dataLancamento = LocalDate.ofEpochDay(dis.readInt());
         duracao = dis.readFloat();
         nota = dis.readByte();
+
+        if (diretores == null) diretores = new ArrayList<String>();
         byte length = dis.readByte();
-        // System.out.println(length);
-        // short tam = 0;
         for (byte i = 0; i < length; i++) {
             diretores.add(dis.readUTF());
-            // tam = dis.readShort();
-            // System.out.println("tam: "+tam);
-            // for(int y = 0; y < tam; y++){
-            //     System.out.println(y);
-            // }
         }
     }
 }

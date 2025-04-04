@@ -167,7 +167,7 @@ public class ControleSerie {
     }
 
     public void povoar(){
-        try{
+        try {
             ArrayList<String> criadores = new ArrayList<String>();
             criadores.add("Charlie Brooker");
             incluirSerie(new Serie("Black Mirror", 2011, 
@@ -212,12 +212,11 @@ public class ControleSerie {
             "HBO MAX", 8, criadores, 
             "Gangster"));
 
-            System.out.println("Séries povoadas!");
+            System.out.println("\nSéries povoadas!\n");
 
         } catch (Exception e){
             System.err.println("[ERRO]");
             e.printStackTrace();
         }
-        
     }
 }  

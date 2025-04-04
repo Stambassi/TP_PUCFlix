@@ -6,11 +6,9 @@ import entidades.Serie;
 import entidades.Episodio;
 
 import java.util.List;
-import java.util.ResourceBundle.Control;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 
 public class ControleEpisodio {
     private ArquivoEpisodio arqEpisodio;
@@ -158,7 +156,7 @@ public class ControleEpisodio {
      * @return e - Objeto do Episódio buscado
      */
     public Episodio buscarEpisodio(int id) throws Exception {
-        // ler o episódio a partir do arquivoepisódio usando seu id
+        // Ler o Episódio a partir do ArquivoEpisodio usando seu id
         Episodio e = arqEpisodio.read(id);
 
         // Testar se o Episódio pertence à Série da instância atual
@@ -269,25 +267,38 @@ public class ControleEpisodio {
         return resposta;
     }
 
+    /*
+     * povoar - Função para inicalizar o Banco de Dados com Episódios amostrais
+     */
     public void povoar(){
-        try{
-            ArrayList<String> criadores = new ArrayList<String>();
-            criadores.add("Charlie Brooker");
-            incluirEpisodio(new Episodio(1, "Common People",7,LocalDate.of(2025,04,10),44,5,criadores));
+        // Inicar bloco try-catch
+        try {
+            // Iniciar ArrayList de diretores, pois para inserir é precisso passar um ArrayList como parâmetro
+            ArrayList<String> diretores = new ArrayList<String>();
 
-            // criadores.clear();
-            // criadores.add("Vince Gilligan");
-            // incluirSerie(new Serie("Breaking Bad", 2008, 
-            // "Um professor de química diagnosticado com câncer de pulmão se transforma em fabricante e vendedor de metanfetamina, a fim de garantir o futuro da sua família", 
-            // "Netflix", 10, criadores, 
-            // "Drug Crime"));
+            // Inserir Episódio
+            diretores.add("Takahiro Ikezoe");
+            diretores.add("Yasuhiro Irie");
+            incluirEpisodio(new Episodio(this.serie.getID(), "Hagane no renkinjutsushi", 1, LocalDate.of(2009, 04, 05), 24.0F, 7, diretores));
 
-            System.out.println("Episódios povoadas!");
+            // Inserir Episódio
+            diretores.clear();
+            diretores.add("Hiromu Arakawa");
+            diretores.add("Hiroshi Ônogi");
+            incluirEpisodio(new Episodio(this.serie.getID(), "Hajimari no hi", 1, LocalDate.of(2009, 04, 12), 24.0F, 8, diretores));
+
+            // Inserir Episódio
+            diretores.clear();
+            diretores.add("Yasuhiro Irie");
+            diretores.add("Masao Ôkubo");
+            incluirEpisodio(new Episodio(this.serie.getID(), "Jakyô no machi", 1, LocalDate.of(2009, 04, 19), 24.0F, 7, diretores));
+
+            System.out.println("\nEpisódios povoados!");
 
         } catch (Exception e){
-            System.err.println("[ERRO]");
+            System.err.println("[ERRO]: " + e.getMessage());
             e.printStackTrace();
         }
-        
     }
+
 }

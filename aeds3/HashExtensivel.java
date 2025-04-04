@@ -373,7 +373,6 @@ public class HashExtensivel<T extends RegistroHashExtensivel> {
   }
 
   public T read(int chave) throws Exception {
-
     // Carrega o diretório
     byte[] bd = new byte[(int) arqDiretorio.length()];
     arqDiretorio.seek(0);

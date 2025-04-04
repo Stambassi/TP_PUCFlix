@@ -72,17 +72,45 @@ public class Serie implements EntidadeArquivo {
      * Método toString: retorna a representação formatada da série
      */
     public String toString() {
-        String formato = "+--------------------------------------+\n" +
-                "| ID...................: %d |\n" +
-                "| Nome...............: %s |\n" +
-                "| Ano de Lançamento..: %d |\n" +
-                "| Sinopse............: %s |\n" +
-                "| Streaming..........: %s |\n" +
-                "| Nota...............: %d |\n" +
-                "| Criadores..........: %s |\n" +
-                "| Gênero.............: %s |\n" +
-                "+--------------------------------------+";
-        return String.format(formato, ID, nome, anoLancamento, sinopse, streaming, nota, criadores.toString(), genero);
+        // Definir dados
+        StringBuilder str = new StringBuilder();
+        int limite = 120;
+        String sinopseTrim = sinopse;
+
+        // Encontrando o maior comprimento dos valores para alinhar
+        int maxLength = Math.max(20, sinopse.length()); 
+
+        // Testar se a sinopse é grande demais
+        if (maxLength > limite) {
+            maxLength = limite;
+        }
+
+        // Testar se a sinopse ultrapassa o limite
+        if (sinopse.length() > limite) {
+            sinopseTrim = sinopse.substring(0, limite - 3) + "...";
+        }
+
+        // Cabeçalho
+        str.append("\n+" + "-".repeat(maxLength + 21) + "+\n");
+
+        // Conteúdo formatado
+        str.append(String.format("| ID...............: %-" + maxLength + "d |\n", ID));
+        str.append(String.format("| Nome.............: %-" + maxLength + "s |\n", nome));
+        str.append(String.format("| Ano de Lançamento: %-" + maxLength + "d |\n", anoLancamento));
+        str.append(String.format("| Sinopse..........: %-" + maxLength + "s |\n", sinopseTrim));
+        str.append(String.format("| Streaming........: %-" + maxLength + "s |\n", streaming));
+        str.append(String.format("| Nota.............: %-" + maxLength + "d |\n", nota));
+        str.append(String.format("| Gênero...........: %-" + maxLength + "s |\n", genero));
+
+
+        for (int i = 0; i < criadores.size(); i++) 
+            str.append(String.format("| Criador (%d)......: %-"+maxLength+"s |\n", i + 1, criadores.get(i)));
+
+        // Rodapé
+        str.append("+" + "-".repeat(maxLength + 21) + "+");
+
+        // Retornar
+        return str.toString();
     }
 
     /**

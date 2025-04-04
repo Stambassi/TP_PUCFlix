@@ -25,14 +25,14 @@ public class Arquivo<T extends EntidadeArquivo> {
             arquivo.writeByte(2);  // versão do Arquivo
             arquivo.writeInt(0);   // último ID
             arquivo.writeLong(-1);   // ponteiro para primeiro registro excluído
-            (new File("./dados/"+nomeEntidade+"/indiceDireito.d.db")).delete();
-            (new File("./dados/"+nomeEntidade+"/indiceDireito.c.db")).delete();
+            (new File("./dados/"+nomeEntidade+"/indiceDireto.d.db")).delete();
+            (new File("./dados/"+nomeEntidade+"/indiceDireto.c.db")).delete();
         }
         indiceDireto = new HashExtensivel<>(
             ParIDEndereco.class.getConstructor(),
             4,
-            "./dados/"+nomeEntidade+"/indiceDireito.d.db",
-            "./dados/"+nomeEntidade+"/indiceDireito.c.db");
+            "./dados/"+nomeEntidade+"/indiceDireto.d.db",
+            "./dados/"+nomeEntidade+"/indiceDireto.c.db");
     }
 
     public int create(T entidade) throws Exception {
@@ -58,17 +58,21 @@ public class Arquivo<T extends EntidadeArquivo> {
             arquivo.skipBytes(2);
             arquivo.write(vb);
         }
-        indiceDireto.create(new ParIDEndereco(novoID, endereco));
+
+        ParIDEndereco pie = new ParIDEndereco(novoID, endereco);
+
+        indiceDireto.create(pie);
         return novoID;
     }
 
     public T read(int id) throws Exception {
         ParIDEndereco pie = indiceDireto.read(id);
-        if(pie==null){
-            System.out.println("ParIDEndereco nulo");
+        if (pie == null){
+            //System.out.println("ParIDEndereco nulo");
             return null;
-
         }
+
+        System.out.println("Arquivo - " + pie);
         long endereco = pie.getEndereco();
         if(endereco==-1)
             return null;

@@ -95,7 +95,7 @@ public class VisaoSerie {
                 controleSerie.incluirSerie(s);
                 System.out.println("Serie incluído com sucesso.");
             } catch(Exception e) {
-                System.out.println("Erro do sistema. Não foi possível incluir a Serie!");
+                System.err.println("[ERRO]: " + e.getMessage());
             }
         }
     }
@@ -451,10 +451,11 @@ public class VisaoSerie {
         boolean dadosCorretos;
 
         // Exibir opções de seleção
-        System.out.println("Como deseja fazer a busca? ");
-        System.out.println("1 - Buscar por nome");
+        System.out.println("\n> Como deseja fazer a busca da Série?\n");
+        System.out.println("1 - Buscar por Nome");
         System.out.println("2 - Buscar por ID");
         System.out.println("0 - Sair");
+        System.out.print("\nOpção: ");
 
         // Tentar ler a opção do console
         try {
@@ -532,7 +533,7 @@ public class VisaoSerie {
     }
 
     public Serie buscarSerieID() {
-        System.out.println("\nBusca de Serie por ID");
+        System.out.println("\n> Busca de Serie por ID");
         int id = -1;
         boolean dadosCorretos = false;
 
@@ -558,14 +559,14 @@ public class VisaoSerie {
                 return null;
             }
         } catch(Exception e) {
-            System.out.println("Erro do sistema. Não foi possível buscar a Série!");
-            e.printStackTrace();
+            System.err.println("[ERRO]: " + e.getMessage());
+            //e.printStackTrace();
             return null;
         }
     }   
 
     public List<Serie> buscarSerieNome() {
-        System.out.println("\nBusca de série por nome");
+        System.out.println("\n> Busca de Série por Nome");
         System.out.print("\nNome: ");
         String nome = console.nextLine();  // Lê o título digitado pelo usuário
         List<Serie> series = new ArrayList<Serie>();
@@ -576,17 +577,14 @@ public class VisaoSerie {
             if (series.size()>0) {
                 return series;
             } else {
-                System.out.println("Nenhuma Série encontrado.");
+                System.out.println("Nenhuma Série encontrada.");
                 return series;
             }
         } catch(Exception e) {
-            //System.out.println("Erro do sistema. Não foi possível buscar as Séries!");
-            System.out.println(e.getMessage());
+            System.err.println("[ERRO]: " + e.getMessage());
             return null;
         }
     }   
-
-
 
     public void alterarSerie() {
         System.out.println("\nAlteração de Serie");
@@ -616,12 +614,11 @@ public class VisaoSerie {
                 System.out.println("Serie não encontrado.");
             }
         } catch (Exception e) {
-            System.out.println("Erro do sistema. Não foi possível alterar a Série!");
+            System.out.println("[ERRO]: " + e.getMessage());
             e.printStackTrace();
         }
         
     }
-
 
     public void excluirSerie() {
         System.out.println("\nExclusão de Série");
@@ -662,12 +659,7 @@ public class VisaoSerie {
         }
     }
 
-    public void povoar() throws Exception {
-        controleSerie.povoar();
-    }
-
     public void buscarEpisodios() {
-        System.out.println("Função Buscar Episódios em construção...");
+        System.out.println("Funçao buscarEpisódios em construção...");
     }
-
 }
