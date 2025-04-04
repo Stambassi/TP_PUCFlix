@@ -132,7 +132,12 @@ public class ArquivoSerie extends Arquivo<Serie> {
             throw new Exception("ID da Série inválido");
 
         // Buscar o ParIDID de Série-Episódio a partir do ID da Série
-        List<ParIDID> piis = indiceSerieEpisodio.read(new ParIDID(id, -1));
+        ParIDID pnii = new ParIDID(id, -1);
+        List<ParIDID> piis = indiceSerieEpisodio.read(pnii);
+
+        // Testar se algum episódio foi encontrado
+        if (piis.isEmpty()) 
+            throw new Exception("Não há episódios vinculados a essa Série!");
 
         // Definir array de Episódios com o tamanho da lista de Pares Série-Episódio
         Episodio[] episodios = new Episodio[piis.size()];
@@ -167,7 +172,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
         ArrayList<ParNomeID> pnis = indiceNome.read(pnid);
 
         // Testar se há algum Par encontrado
-        if ( !(pnis.size() > 0) )
+        if ( pnis.isEmpty() )
             throw new Exception ("Não foi encontrado nenhuma Série com o nome buscado!");
 
         // Definir array de Séries com o tamanho do número de pares

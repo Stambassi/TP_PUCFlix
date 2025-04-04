@@ -80,7 +80,12 @@ public class ParIDID implements RegistroArvoreBMais<ParIDID> {
      * @return (int) Valor negativo, zero ou positivo conforme a ordem crescente de IDs
      */
     public int compareTo(ParIDID obj) {
-        return this.IDEpisodio - obj.IDEpisodio; 
+        if (this.IDSerie != obj.IDSerie)
+            return this.IDSerie - obj.IDSerie;
+        else
+        // Só compara os valores de id2, se o id2 da busca for diferente de -1
+        // Isso é necessário para que seja possível a busca de lista
+            return this.IDEpisodio == -1 ? 0 : this.IDEpisodio - obj.IDEpisodio;
     }
 
     /**

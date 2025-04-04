@@ -586,7 +586,6 @@ public class VisaoEpisodio {
             System.out.print("\nID: ");
             if (console.hasNextInt()) {
                 id = console.nextInt();
-
                 // Testar o ID do Episódio
                 if (id > 0)
                     dadosCorretos = true;
@@ -608,9 +607,8 @@ public class VisaoEpisodio {
 
             // Retornar
             return Episodio;
-        } catch (Exception e) {
-            System.err.println("[ERRO]: " + e.getMessage());
-            e.printStackTrace();
+        } catch(Exception e) {
+            System.err.print("\n[ERRO]: " + e.getMessage());
             return null;
         }
     }
@@ -702,7 +700,7 @@ public class VisaoEpisodio {
 
     public void mostraEpisodio(Episodio Episodio) {
         if (Episodio != null) {
-            System.out.println(Episodio);
+            System.out.print(Episodio);
         }
     }
 

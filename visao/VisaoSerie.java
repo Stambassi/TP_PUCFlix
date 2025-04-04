@@ -1,6 +1,7 @@
 package visao;
 
 import entidades.Serie;
+import entidades.Episodio;
 import controle.ControleSerie;
 
 import java.util.ArrayList;
@@ -660,6 +661,43 @@ public class VisaoSerie {
     }
 
     public void buscarEpisodios() {
-        System.out.println("Funçao buscarEpisódios em construção...");
+        // Iniciar bloco try-catch
+        try {
+            // Tentar ler o Serie com o ID fornecido
+            Serie s = buscarUmaSerie();
+
+            // Mostrar cabeçalho
+            System.out.println("\n> Episódios da Série\n");
+
+            // Buscar todos os episódios vinculados à Série
+            List<Episodio> episodios = controleSerie.buscarSerieEpisodios(s.getID());
+
+            // Mostrar as opções de Séries a serem escolhidas
+            int i = 1;
+            for (Episodio episodio : episodios) {
+                System.out.println("(" + (i++) + ") - " + episodio.getNome() + " " + episodio.getTemporada() + " - Temporada");
+            }
+
+            // Definir variável auxiliar
+            int opcao = 0;
+            boolean dadosCorretos = false;
+
+            // Tentar ler a opção do console
+            do {
+                System.out.print("\nOpção: ");
+                try {
+                    opcao = Integer.valueOf(console.nextLine());
+                    dadosCorretos = true;
+                } catch(NumberFormatException e) {
+                    System.err.println("\n[ERRO]: Opção inválida!");
+                    dadosCorretos = false;
+                }
+            } while ( !dadosCorretos || !ControleSerie.validarSerie(opcao));
+            
+            // Identificar Episódio escolhido
+            System.out.print(episodios.get(opcao - 1));
+        } catch (Exception e) {
+            System.out.println("[ERRO]: " + e.getMessage());
+        }
     }
 }

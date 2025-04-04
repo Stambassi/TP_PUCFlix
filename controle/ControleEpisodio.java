@@ -159,6 +159,10 @@ public class ControleEpisodio {
         // Ler o Episódio a partir do ArquivoEpisodio usando seu id
         Episodio e = arqEpisodio.read(id);
 
+        // Testar a leitura do Episódio
+        if (e == null)
+            throw new Exception("Episódio não encontrado!");
+
         // Testar se o Episódio pertence à Série da instância atual
         if ( e.getIDSerie() != this.serie.getID() ) 
             throw new Exception ("Episódio não pertence à Série atual!");
