@@ -127,8 +127,9 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
 
         // Definir Lista de Pares Nome-ID que possuem a String especificada
         ParNomeID pnid = new ParNomeID(nome, -1);
+        // System.out.println(pnid);
         List<ParNomeID> pnis = indiceNome.read(pnid);
-
+        System.out.println(pnis + ", tamanho: "+pnis.size());
         // Testar se há algum Par encontrado
         if ( !(pnis.size() > 0) )
             throw new Exception ("Não foi encontrado nenhum Episódio com o nome buscado!");
@@ -139,7 +140,7 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         // Iterar sobre a lista de Pares Nome-ID a adicionar os Episódios correspondentes ao array de Episódios
         int i = 0;
         for(ParNomeID pni: pnis) {
-            episodios[i++] = super.read(pni.getID());
+            episodios[i++] = this.read(pni.getID());
         }
 
         // Retornar

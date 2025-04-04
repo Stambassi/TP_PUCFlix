@@ -257,7 +257,7 @@ public class VisaoSerie {
      * lerSerieAlterar - Função para iniciar a operação de leitura de uma Série
      * @return
      */
-    public Serie lerSerieAlterar(Serie antiga) {
+    public Serie lerSerie(Serie antiga) {
         // Definir atributos de uma série
         String nome;
         int anoLancamento = 0;
@@ -267,6 +267,7 @@ public class VisaoSerie {
         ArrayList<String> criadores = new ArrayList<String>();
         String criador;
         String genero;
+        String aux;
 
         // Definir variável de controle
         boolean dadosCorretos = false;
@@ -296,24 +297,24 @@ public class VisaoSerie {
         do {
             // Ler o ano de lançamento da Série
             System.out.print("Qual o ano de lançamento (yyyy)? ");
-        
-            if (console.hasNextInt()) {
-                anoLancamento = console.nextInt();
-                if (anoLancamento == 0){
-                    anoLancamento = antiga.getAnoLancamento();
-                    dadosCorretos = true;
-                }
-                
-
-                // Testar se o ano é válido
-                if(1000 <= anoLancamento && anoLancamento <= 9999)
-                    dadosCorretos = true;
+            aux = console.nextLine();
+            if(aux.length() == 0){
+                anoLancamento = antiga.getAnoLancamento();
+                dadosCorretos = true;
             } else {
-                System.err.println("[ERRO]: O ano deve ser de 4 dígitos!");
+                try{
+                    anoLancamento = Integer.parseInt(aux);
+                    // Testar se o ano é válido
+                    if(1000 <= anoLancamento && anoLancamento <= 9999) {
+                        dadosCorretos = true;
+                    } else {
+                        System.err.println("[ERRO]: O ano deve ser de 4 dígitos!");
+                    }
+                } catch (NumberFormatException e){
+                    dadosCorretos = false;
+                    System.err.println("[ERRO]: Digite um número válido!");
+                }
             }
-
-            // Limpar o buffer
-            console.nextLine();
         } while (!dadosCorretos);
 
         // Reiniciar variável de controle
@@ -356,45 +357,44 @@ public class VisaoSerie {
                 System.err.println("[ERRO]: O streaming deve ter no mínimo 4 caracteres!");
         } while(!dadosCorretos);
 
-        // Reiniciar a variável de controle
+        // Reiniciar variável de controle
         dadosCorretos = false;
 
         // Iniciar bloco de seleção
         do {
-            // Ler a nota da Série 
+            // Ler o ano de lançamento da Série
             System.out.print("Qual a nota (0 a 10)? ");
-
-            if (console.hasNextInt()) {
-                nota = console.nextInt();
-                if (nota == 0){
-                    nota = antiga.getNota();
-                    dadosCorretos = true;
-                }
-                // Testar nota da Sèrie
-                if (0 <= nota && nota <= 10)
-                    dadosCorretos = true;
+            aux = console.nextLine();
+            if(aux.length() == 0){
+                nota = antiga.getNota();
+                dadosCorretos = true;
             } else {
-                System.err.println("[ERRO]: A nota deve ser entre 0 e 10!");
+                try{
+                    anoLancamento = Integer.parseInt(aux);
+                    // Testar se o ano é válido
+                    if(0 <= anoLancamento && anoLancamento <= 10) {
+                        dadosCorretos = true;
+                    } else {
+                        System.err.println("[ERRO]: A nota deve ser entre 0 e 10!");
+                    }
+                } catch (NumberFormatException e){
+                    dadosCorretos = false;
+                    System.err.println("[ERRO]: Digite um número válido!");
+                }
             }
-
-            // Limpar o buffer
-            console.nextLine();
-        } while(!dadosCorretos);
+        } while (!dadosCorretos);
 
         // Reiniciar a variável de controle
         dadosCorretos = false;
         do {
             // Ler os criadores da Série
             System.out.print("Quais são os criadores? (digite FIM para parar) ");
-
             criador = console.nextLine();
             if (criador.length() == 0){
                 criadores = antiga.getCriadores();
                 dadosCorretos = true;
-            }
-
-            // Testar a leitura dos criadores
-            if (criador.equals("FIM") && criadores.size() > 0){
+            } else if (criador.equals("FIM") && criadores.size() > 0){ 
+                // Testar a leitura dos criadores
                 dadosCorretos =  true;
             } else {
                 // Testar se os criadores da série são válidos
@@ -593,7 +593,7 @@ public class VisaoSerie {
             Serie s = buscarUmaSerie();
             if (s != null) {
                 //mostraSerie(s);  // Exibe os dados do Serie para confirmação
-                Serie nova = lerSerieAlterar(s);
+                Serie nova = lerSerie(s);
                 nova.setID(s.getID());
                 // Confirmação da alteração
                 System.out.print("\nConfirma as alterações? (S/N) ");
@@ -648,8 +648,8 @@ public class VisaoSerie {
                 System.out.println("Serie não encontrado.");
             }
         } catch (Exception e) {
-            System.out.println("Erro do sistema. Não foi possível excluir o Serie!");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            // e.printStackTrace();
         }
     }
 
