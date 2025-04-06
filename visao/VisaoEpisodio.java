@@ -170,7 +170,7 @@ public class VisaoEpisodio {
 
         // Definir variáveis auxiliares
         boolean dadosCorretos = false;
-        String regex = "^\\d{4}-\\d{2}-\\d{2}$";
+        String regex = "^\\d{2}/\\d{2}/\\d{4}$";
         Pattern pattern = Pattern.compile(regex);
 
         // Ler o nome do Episódio
@@ -203,8 +203,10 @@ public class VisaoEpisodio {
                     // Testar se a temporada é válida
                     if (0 < temporada && temporada <= 127)
                         dadosCorretos = true;
+                    else 
+                        System.err.println("[ERRO]: A Temporada deve ser entre 1 e 127!");
                 } else {
-                    System.err.println("[ERRO]: A Temporada deve ser entre 1 e 127!");
+                    System.err.println("[ERRO]: A Temporada deve ser um número inteiro!");
                 }
 
                 // Limpar o buffer
@@ -214,7 +216,7 @@ public class VisaoEpisodio {
 
         // Ler a data de lançamento do Episódio
         do {
-            System.out.print("Qual a data de lançamento (dd/MM/yyyy)? > ");
+            System.out.print("Qual a data de lançamento (dd/MM/yyyy)? ");
             String data = console.nextLine();
             Matcher matcher = pattern.matcher(data);
 
@@ -222,19 +224,24 @@ public class VisaoEpisodio {
                 dadosCorretos = true;
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 dataLancamento = LocalDate.parse(data, formatter);
-            } else
+            } else{
                 System.err.println("[ERRO]: O formato deve ser (dd/MM/yyyy)!");
+                dadosCorretos = false;
+            }
         } while (!dadosCorretos);
 
         dadosCorretos = false;
         do {
             System.out.print("Qual a duração (minutos)? ");
-            if (console.hasNextInt()) {
+            if (console.hasNextFloat()) {
                 duracao = console.nextFloat();
-                if (0 < duracao)
+                if (0 < duracao){
                     dadosCorretos = true;
+                } else {
+                    System.err.println("[ERRO]: O episódio deve ter mais que 0 minutos!");
+                }
             } else {
-                System.err.println("[ERRO]: O episódio deve ter mais que 0 minutos!");
+                System.err.println("[ERRO]: Deve entrar com um número! Usar ponto para casas decimais");
             }
             console.nextLine();
         } while (!dadosCorretos);
@@ -243,7 +250,7 @@ public class VisaoEpisodio {
         do {
             System.out.print("Qual a nota (0 a 10)? ");
             if (console.hasNextInt()) {
-                duracao = console.nextInt();
+                nota = console.nextInt();
                 if (0 <= nota && nota <= 10)
                     dadosCorretos = true;
             } else {
@@ -354,7 +361,7 @@ public class VisaoEpisodio {
 
         // Ler a data de lançamento do Episódio
         do {
-            System.out.print("Qual a data de lançamento (dd/MM/yyyy)? > ");
+            System.out.print("Qual a data de lançamento (dd/MM/yyyy)? ");
             String data = console.nextLine();
             Matcher matcher = pattern.matcher(data);
             if (data.length() == 0) {
@@ -566,8 +573,8 @@ public class VisaoEpisodio {
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("[ERRO]: Não foi possível buscar os Episódios!");
-            e.printStackTrace();
+            System.err.println(e.getMessage());
+            // e.printStackTrace();
             return null;
         }
     }
@@ -700,7 +707,7 @@ public class VisaoEpisodio {
 
     public void mostraEpisodio(Episodio Episodio) {
         if (Episodio != null) {
-            System.out.print(Episodio);
+            System.out.println(Episodio);
         }
     }
 

@@ -129,7 +129,7 @@ public class ArquivoEpisodio extends Arquivo<Episodio> {
         ParNomeID pnid = new ParNomeID(nome, -1);
         // System.out.println(pnid);
         List<ParNomeID> pnis = indiceNome.read(pnid);
-        System.out.println(pnis + ", tamanho: "+pnis.size());
+        // System.out.println(pnis + ", tamanho: "+pnis.size());
         // Testar se há algum Par encontrado
         if ( !(pnis.size() > 0) )
             throw new Exception ("Não foi encontrado nenhum Episódio com o nome buscado!");
