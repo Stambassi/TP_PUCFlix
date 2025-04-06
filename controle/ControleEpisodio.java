@@ -252,14 +252,13 @@ public class ControleEpisodio {
     public static boolean verificarEpisodiosSerie(int IDSerie) {
         // Definir variável de resposta
         boolean resposta;
-        
         // Iniciar bloco try-catch
         try {
         // Definir instância do ArquivoSerie
             ArquivoSerie arqSerie = new ArquivoSerie();
-
+            Episodio[] eps = arqSerie.readEpisodios(IDSerie);
         // Testar se há algum episódio na Série encontrada
-            if (arqSerie.readEpisodios(IDSerie) != null)
+            if (eps.length > 0)
                 resposta = true;
             else
                 resposta = false;

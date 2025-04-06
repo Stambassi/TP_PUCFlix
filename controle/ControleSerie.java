@@ -45,9 +45,12 @@ public class ControleSerie {
         Serie s = arqSerie.read(id);
 
         // Verificar se a Série possui Episódios vinculados à ela
-        if (! ControleEpisodio.verificarEpisodiosSerie(s.getID())) 
-            throw new Exception ("Há episódios vinculados com essa série!");
 
+        boolean temEpisodio = ControleEpisodio.verificarEpisodiosSerie(s.getID());
+        if(temEpisodio){
+            throw new Exception ("Há episódios vinculados com essa série!");
+        }
+        
         // Exlcuir a Série a partir do ArquivoSerie e retornar o seu status
         return arqSerie.delete(id);
     }

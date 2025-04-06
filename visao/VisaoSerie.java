@@ -98,6 +98,8 @@ public class VisaoSerie {
             } catch(Exception e) {
                 System.err.println("[ERRO]: " + e.getMessage());
             }
+        } else {
+            System.out.println("Operação cancelada.");
         }
     }
 
@@ -631,7 +633,7 @@ public class VisaoSerie {
                 //mostraSerie(s);  // Exibe os dados do Serie para confirmação
 
                 System.out.print("\nConfirma a exclusão do Serie? (S/N) ");
-                char resp = console.next().charAt(0);  // Lê a resposta do usuário
+                char resp = console.nextLine().charAt(0);  // Lê a resposta do usuário
 
                 if (resp == 'S' || resp == 's') {
                     boolean excluido = controleSerie.excluirSerie(s.getID());  // Chama o método de exclusão no arquivo
@@ -644,7 +646,6 @@ public class VisaoSerie {
                 } else {
                     System.out.println("Exclusão cancelada.");
                 }
-                console.nextLine(); // Limpar o buffer 
             } else {
                 System.out.println("Serie não encontrado.");
             }
