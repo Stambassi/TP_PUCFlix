@@ -285,11 +285,13 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 
 ## João
 
+<div align="justify">
 Para o desenvolvimento do trabalho prático, organizamos as tarefas entre os integrantes do grupo. O Augusto assumiu o papel de Project Manager, enquanto o Lucas e eu atuamos como desenvolvedores. Fiquei responsável por implementar as classes relacionadas à série. A princípio, tive dificuldades para compreender o uso das estruturas Árvore B+ e Hash Extensível, mas essas dúvidas foram sanadas ao longo das aulas de AEDS III.
 
 Além disso, gostaria de destacar o apoio fundamental dos meus colegas, que me ajudaram na conclusão das tarefas e me ofereceram suporte nos momentos de dificuldade. O Augusto, com uma excelente gestão, e o Lucas, colaborando ativamente para o cumprimento dos requisitos.
 
 Por fim, o trabalho contribuiu significativamente para o aprofundamento do meu conhecimento sobre estruturas de arquivos, permitindo aplicar na prática os conceitos teóricos abordados em sala de aula.
+</div>
 
 # Materiais adicionais
 
