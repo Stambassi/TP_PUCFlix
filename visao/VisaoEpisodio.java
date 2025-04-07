@@ -43,14 +43,22 @@ public class VisaoEpisodio {
      * Série'
      */
     public void menu() {
-        // Definir variável auxiliar
-        int opcao;
+        // Tentar ler a Série
+        try {
+            VisaoSerie visaoSerie = new VisaoSerie();
+            serie = visaoSerie.buscarUmaSerie();
+        } catch (Exception e){
+            System.err.println("\n[ERRO]: " + e.getMessage());
+        }
 
         // Testar se a Série foi selecionada
         if (serie == null) {
             System.err.println("[ERRO]: Série não encontrada!");
             return;
         }
+        
+        // Definir variável auxiliar
+        int opcao;
 
         // Iniciar bloco de seleção
         do {
