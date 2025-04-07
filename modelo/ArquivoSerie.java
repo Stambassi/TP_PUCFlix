@@ -47,7 +47,6 @@ public class ArquivoSerie extends Arquivo<Serie> {
 
         // Criar o índice Nome-Série
         ParNomeID pnid = new ParNomeID(s.getNome(), id);
-        System.out.println(pnid);
         indiceNome.create(pnid);
 
         // Retornar o ID da Série
@@ -173,7 +172,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
 
         // Testar se há algum Par encontrado
         if ( pnis.isEmpty() )
-            throw new Exception ("Não foi encontrado nenhuma Série com o nome buscado!");
+            throw new Exception ("Não foi encontrada nenhuma Série com o nome buscado!");
 
         // Definir array de Séries com o tamanho do número de pares
         Serie[] series = new Serie[pnis.size()];

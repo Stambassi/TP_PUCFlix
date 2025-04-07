@@ -148,7 +148,7 @@ public class Episodio implements EntidadeArquivo {
         }
 
         // Rodapé
-        str.append("+" + "-".repeat(maxLength + 22) + "+");
+        str.append("+" + "-".repeat(maxLength + 22) + "+\n");
 
         // Retornar
         return str.toString();

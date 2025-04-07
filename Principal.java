@@ -50,20 +50,21 @@ public class Principal {
             } while (opcao != 0);
 
         } catch(Exception e) {
-            e.printStackTrace();
+            System.err.println("\n[ERRO]: " + e.getMessage());
         }
     }
 
     public static void episodioEntrarSerie(){
         int opcao;
         do {
-            System.out.println("\n\nPUCFlix v"+versao);
+            System.out.println("\nPUCFlix v"+versao);
             System.out.println("--------------------------");
             System.out.println("> Início > Episódios");
             System.out.println("\n1 - Escolher Série");
             System.out.println("0 - Sair");
 
             System.out.print("\nOpção: ");
+
             try {
                 opcao = Integer.valueOf(console.nextLine());
             } catch(NumberFormatException e) {
@@ -72,23 +73,26 @@ public class Principal {
 
             switch (opcao) {
                 case 1:
-                    try{
-                        Serie s = (new VisaoSerie()).buscarUmaSerie();
-                        (new VisaoEpisodio(s)).menu();
+                    try {
+                        VisaoSerie visaoSerie = new VisaoSerie();
+                        Serie s = visaoSerie.buscarUmaSerie();
+                        if (s != null) {
+                            VisaoEpisodio visaoEpisodio = new VisaoEpisodio(s);
+                            visaoEpisodio.menu();
+                        }
                     } catch (Exception e){
-                        e.printStackTrace();
+                        System.err.println("\n[ERRO]: " + e.getMessage());
                     }
-
                     break;
                 case 0:
                     break;
                 default:
-                    System.out.println("Opção inválida!");
+                    System.err.println("\n[ERRO]: Opção inválida!");
                     break;
             }
-
         } while (opcao != 0);
     }
+
     public static void povoar(){
         try {
             ControleSerie controleSerie = new ControleSerie();
@@ -97,7 +101,7 @@ public class Principal {
             ControleEpisodio controleEpisodio = new ControleEpisodio(controleSerie.buscarSerie(4));
             controleEpisodio.povoar();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("\n[ERRO]: " + e.getMessage());
         }
     }
 
