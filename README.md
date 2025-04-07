@@ -5,17 +5,17 @@ O projeto PUCFlix é um cadastro de séries e episódios, com uma interface text
 # ‼️ Checklist
 
 (Marcar posteriormente com ✅) 
-+ As operações de inclusão, busca, alteração e exclusão de séries estão implementadas e funcionando corretamente? 
-+ As operações de inclusão, busca, alteração e exclusão de episódios, por série, estão implementadas e funcionando corretamente? 
-+ Essas operações usam a classe CRUD genérica para a construção do arquivo e as classes Tabela Hash Extensível e Árvore B+ como índices diretos e indiretos? 
-+ O atributo de ID de série, como chave estrangeira, foi criado na classe de episódios?
-+ Há uma árvore B+ que registre o relacionamento 1:N entre episódios e séries?
-+ Há uma visualização das séries que mostre os episódios por temporada?
-+ A remoção de séries checa se há algum episódio vinculado a ela?
-+ A inclusão da série em um episódio se limita às séries existentes?
-+ O trabalho está funcionando corretamente?
-+ O trabalho está completo?
-+ O trabalho é original e não a cópia de um trabalho de outro grupo?
++ As operações de inclusão, busca, alteração e exclusão de séries estão implementadas e funcionando corretamente? ✅
++ As operações de inclusão, busca, alteração e exclusão de episódios, por série, estão implementadas e funcionando corretamente? ✅
++ Essas operações usam a classe CRUD genérica para a construção do arquivo e as classes Tabela Hash Extensível e Árvore B+ como índices diretos e indiretos? ✅
++ O atributo de ID de série, como chave estrangeira, foi criado na classe de episódios?✅
++ Há uma árvore B+ que registre o relacionamento 1:N entre episódios e séries?✅
++ Há uma visualização das séries que mostre os episódios por temporada?✅
++ A remoção de séries checa se há algum episódio vinculado a ela?✅
++ A inclusão da série em um episódio se limita às séries existentes?✅
++ O trabalho está funcionando corretamente?✅
++ O trabalho está completo?✅
++ O trabalho é original e não a cópia de um trabalho de outro grupo?✅
 
 # 📦 Classes do sistema
 
@@ -281,7 +281,11 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 
 ## Augusto
 
+Para esse Trabalho Prático, eu tive uma função que não costumo ter dentro da faculdade: a de Product Manager. Apesar de ser bem difícil descrever todo o funcionamento de um programa e contornar os seus possíveis problemas, foi muito bom para possuir um entendimento melhor da questão, mesmo falhando em prever tudo. Além disso, foi uma experiência única de liderança que agregou de maneira positiva na minha vida.
+
 ## Lucas
+
+Nessa atividade, tive a oportunidade de aprender melhor como funciona a manipulação em baixo nível de dados em memória secundária, o que foi uma experiência agregadora aos meus conhecimentos prévios, sobretudo na área de Banco de Dados. Com os conhecimentos adquiridos nesse Trabalho Prático, serei capaz de tomar melhores decisões de projeto para implementar um Banco de Dados complexo construído a partir de maior abstrações, tornando o armazenamento e a consulta das informações mais eficiente.
 
 ## João
 

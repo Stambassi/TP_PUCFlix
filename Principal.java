@@ -17,7 +17,7 @@ public class Principal {
             // Iniciar bloco de seleção
             do {
                 // Mostrar o cabeçalho
-                System.out.println("PUCFlix v" + versao);
+                System.out.println("\nPUCFlix v" + versao);
                 System.out.println( "-----------");
                 System.out.println("> Início");
                 System.out.println("\n1 - Série");

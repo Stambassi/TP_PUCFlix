@@ -188,8 +188,8 @@ public class ControleEpisodio {
 
         // Iterar pela lista de Episódios
         for (Episodio episodio : episodios) {
-            // Testar se o Episódio pertence à Série atual
-            if (episodio.getIDSerie() == serie.getID())
+            // Testar se não há alguma Série vinculada ou o Episódio pertence à Série atual
+            if (this.serie == null || episodio.getIDSerie() == serie.getID())
                 episodiosValidos.add(episodio); // Inserir na lista
         }
 
@@ -211,18 +211,17 @@ public class ControleEpisodio {
 
         //Converter Episodio[] para List<Episodio>
         List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
+        List<Episodio> episodiosTemporada = new ArrayList<Episodio>();
 
         // Iterar sobre todos os Episódios encontrados e filtrar apenas os que pertencem à temporada
-        int i = 0;
         for (Episodio episodio : episodios) {
             // Testar se o Episódio pertence à temporada especificada
-            if (episodio.getTemporada() != temporada)
-                episodios.remove(i);
-            i++;
+            if (episodio.getTemporada() == temporada)
+                episodiosTemporada.add(episodio);
         }
 
         // Retornar os Episódios que pertencem à temporada da Série atual
-        return episodios;        
+        return episodiosTemporada;        
     }
 
     /*
