@@ -20,7 +20,7 @@ public class ArquivoSerie extends Arquivo<Serie> {
     public ArquivoSerie() throws Exception {
         // Chamar o construtor da classe herdada
         super("serie", Serie.class.getConstructor());
-        //arqSerie = new Arquivo<Serie>();
+
         // Chamar o construtor do índice de Série e Episódio
         indiceSerieEpisodio = new ArvoreBMais<> (
             ParIDID.class.getConstructor(), 
@@ -69,7 +69,6 @@ public class ArquivoSerie extends Arquivo<Serie> {
         // Definir Lista de Pares Série-Episódio que possuem o ID da Série especificada
         List<ParIDID> piis = indiceSerieEpisodio.read(new ParIDID(id, -1));
 
-        //System.out.println(piis);
         // Testar se há algum Par encontrado
         if ( piis.size() > 0 )
             throw new Exception ("Não foi possível excluir a Série, pois há Episódios vinculados a ela!");

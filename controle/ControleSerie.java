@@ -46,8 +46,8 @@ public class ControleSerie {
 
         // Verificar se a Série possui Episódios vinculados à ela
         if (ControleEpisodio.verificarEpisodiosSerie(s.getID())) 
-            throw new Exception ("Há episódios vinculados com essa série!");
-        
+            throw new Exception ("Há episódios vinculados com essa série!"); 
+
         // Exlcuir a Série a partir do ArquivoSerie e retornar o seu status
         return arqSerie.delete(id);
     }
@@ -72,9 +72,11 @@ public class ControleSerie {
      * @return s - Objeto da Série buscada
      */
     public Serie buscarSerie(int id) throws Exception {
-        // Buscar a Série a partir do ArquivoSerie
+        // Testar se existe um ArquivoSerie
         if (arqSerie == null)
             System.out.println("[ERRO]: Arquivo nulo");
+
+        // Buscar a Série a partir do ArquivoSerie
         Serie s = arqSerie.read(id);
 
         // Retornar o objeto da Série
@@ -90,7 +92,7 @@ public class ControleSerie {
         // Ler todos as Sèries cujo nome inicia com a String determinada a partir do ArquivoSerie
         Serie[] arraySeries = arqSerie.readNome(entrada);
 
-        //Converter Serie[] para List<Serie>
+        // Converter Serie[] para List<Serie>
         List<Serie> series = new ArrayList<Serie>( Arrays.asList(arraySeries) );
 
         // Retornar lista de Séries
@@ -106,9 +108,9 @@ public class ControleSerie {
         // Ler todos os Episódios da Série atual a partir do ArquivoSerie
         Episodio[] arrayEpisodios = arqSerie.readEpisodios(id);
 
-        //Converter Episodio[] para List<Episodio>
-        List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
-        
+        // Converter Episodio[] para List<Episodio>
+        List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );    
+
         // Retornar lista de Episódios
         return episodios;
     }
@@ -123,7 +125,7 @@ public class ControleSerie {
         // Ler todos os Episódios da Série atual a partir do ArquivoSerie
         Episodio[] arrayEpisodios = arqSerie.readEpisodios(id); 
 
-        //Converter Episodio[] para List<Episodio>
+        // Converter Episodio[] para List<Episodio>
         List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
 
         // Iterar sobre a lista de todos os Episódios encontrados na Série
@@ -166,6 +168,9 @@ public class ControleSerie {
         return resposta;
     }
 
+    /*
+     * povoar - Função para popular o Banco de Dados com Séries amostrais
+     */
     public void povoar(){
         try {
             ArrayList<String> criadores = new ArrayList<String>();
@@ -215,7 +220,7 @@ public class ControleSerie {
             System.out.println("\nSéries povoadas!\n");
 
         } catch (Exception e){
-            System.err.println("[ERRO]");
+            System.err.println("\n[ERRO]: " + e.getMessage());
         }
     }
 }  

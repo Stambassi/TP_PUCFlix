@@ -470,9 +470,8 @@ public class VisaoSerie {
         return nova;
     }
 
-
     /*
-     * buscarUmaSerie - Função para iniciar a operação de seleção do método de busca de uma Série (nome ou ID)
+     * buscarUmaSerie - Função para iniciar a operação de busca de Série pelo nome
      * @return s - Série selecionada
      */
     public Serie buscarUmaSerie() {
@@ -526,6 +525,7 @@ public class VisaoSerie {
 
     /*
      * buscarSerieNome - Função para ler um Nome e buscar uma Série a partir dele
+     * @return series - Lista de Séries cujo nome se inicia com a String buscada
      */
     public List<Serie> buscarSerieNome() {
         // Mostrar o cabeçalho
@@ -590,6 +590,7 @@ public class VisaoSerie {
 
     /*
      * mostraSerie - Função para testar e mostrar a Série para o Usuário
+     * @param serie - Série a ser mostada
      */
     public void mostraSerie(Serie serie) {
         if (serie != null) {

@@ -14,11 +14,15 @@ public class ControleEpisodio {
     private ArquivoEpisodio arqEpisodio;
     private Serie serie;
 
+    /*
+     * Construtor da classe ControleEpisodio sem a vinculação de Série
+     */
     public ControleEpisodio() throws Exception{
         this.arqEpisodio = new ArquivoEpisodio();
     }
+    
     /*
-     * Construtor da classe ControleEpisodio
+     * Construtor da classe ControleEpisodio com a vinculação de Série
      * @param serie - Série referente à classe atual
      */
     public ControleEpisodio(Serie serie) throws Exception {
@@ -143,7 +147,7 @@ public class ControleEpisodio {
         // Ler todos os Episódios da Série atual a partir do ArquivoSerie
         Episodio[] arrayEpisodios = arqSerie.readEpisodios(serie.getID());
 
-        //Converter Episodio[] para List<Episodio>
+        // Converter Episodio[] para List<Episodio>
         List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
 
         // Retornar lista de Episódios
@@ -209,7 +213,7 @@ public class ControleEpisodio {
         // Ler todos os Episódios da Série atual a partir do ArquivoSerie
         Episodio[] arrayEpisodios = arqSerie.readEpisodios(serie.getID());
 
-        //Converter Episodio[] para List<Episodio>
+        // Converter Episodio[] para List<Episodio>
         List<Episodio> episodios = new ArrayList<Episodio>( Arrays.asList(arrayEpisodios) );
         List<Episodio> episodiosTemporada = new ArrayList<Episodio>();
 
@@ -219,6 +223,10 @@ public class ControleEpisodio {
             if (episodio.getTemporada() == temporada)
                 episodiosTemporada.add(episodio);
         }
+
+        // Testar se algum episódio da Temporada foi encontrado
+        if (episodiosTemporada.isEmpty())
+            throw new Exception("Não há Episódios vinculados a essa Temporada!");
 
         // Retornar os Episódios que pertencem à temporada da Série atual
         return episodiosTemporada;        
@@ -254,11 +262,13 @@ public class ControleEpisodio {
     public static boolean verificarEpisodiosSerie(int IDSerie) {
         // Definir variável de resposta
         boolean resposta;
+
         // Iniciar bloco try-catch
         try {
         // Definir instância do ArquivoSerie
             ArquivoSerie arqSerie = new ArquivoSerie();
             Episodio[] eps = arqSerie.readEpisodios(IDSerie);
+
         // Testar se há algum episódio na Série encontrada
             if (eps.length > 0)
                 resposta = true;
@@ -273,7 +283,7 @@ public class ControleEpisodio {
     }
 
     /*
-     * povoar - Função para inicalizar o Banco de Dados com Episódios amostrais
+     * povoar - Função para popular o Banco de Dados com Episódios amostrais
      */
     public void povoar(){
         // Inicar bloco try-catch
@@ -301,7 +311,7 @@ public class ControleEpisodio {
             System.out.println("\nEpisódios povoados!");
 
         } catch (Exception e){
-            System.err.println("[ERRO]: " + e.getMessage());
+            System.err.println("\n[ERRO]: " + e.getMessage());
         }
     }
 
