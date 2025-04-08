@@ -2,9 +2,10 @@
 
 O projeto PUCFlix é um cadastro de séries e episódios, com uma interface textual para mostrar os registros. O nosso projeto é uma implementação simples de um Banco de Dados sem utilizar um SGBD, contendo todas as operações de CRUD (Create, Read, Update e Delete) para as duas entidades, garantindo seus relacionamentos.
 
+Sobre o nosso grupo: [Membros!](#✒️-Autores)
+
 # ‼️ Checklist
 
-(Marcar posteriormente com ✅) 
 + As operações de inclusão, busca, alteração e exclusão de séries estão implementadas e funcionando corretamente? ✅
 + As operações de inclusão, busca, alteração e exclusão de episódios, por série, estão implementadas e funcionando corretamente? ✅
 + Essas operações usam a classe CRUD genérica para a construção do arquivo e as classes Tabela Hash Extensível e Árvore B+ como índices diretos e indiretos? ✅
@@ -104,12 +105,11 @@ Classes que realiza a mediação entre as operações dos arquivos e a entrada d
 
 + incluirSerie(Serie serie): Função que vai inserir serie no banco de dados.
 + excluirSerie(int id): Função para excluir serie por ID. Testar antes de deletar se tem algum episodio dessa serie usando ControleEpisodio.verificarEpisodiosSerie( )
-+ excluirSerie(String nome): Função para excluir serie pelo nome.
-+ alterarSerie (int id): Função para alterar algum valor da Serie. Usar ID para identificar a Serie a ser excluida, depois a função lerSerie( ) para criar a nova versão do objeto
++ alterarSerie (Serie s): Função para alterar algum valor da Serie, usar parâmetro para representar objeto a ser alterado.
 + buscarSerie(int id): Função que recebe um ID e retorna um Objeto Serie
-+ buscarSerie(String entrada): Função que retorna um ou mais episódio que contém a sequência inserida.Ex. : Entrada: “Era” -> retorna [Serie Era uma vez, Serie Era do Gelo]
-+ buscarSerieEpisodios(Serie serie): Função que mostra todos os Episódios da Série
-+ buscarSerieEpisodiosPorTemporada(int temporada): Função que mostra os episódios de uma certa temporada de uma série
++ buscarSerie(String entrada): Função que retorna um ou mais episódio que contém a sequência inserida.Ex. : Entrada: “F” -> retorna [Fullmetal Alchemist, Friends]
++ buscarSerieEpisodios(int id): Função para buscar uma lista com todos os Episódios de uma determinada Série
++ buscarSerieEpisodiosPorTemporada(int id, int temporada): Função para buscar todos os Episódios de uma Série de uma determinada Temporada.
 + validarSerie(int id): Função estática que recebe um id de Série como parâmetro e retorna True ou False de acordo com sua existência válida no banco de dados. Para a leitura do objeto, instanciar um novo ArquivoSerie e usar o seu read com o id.
 + povoar( ): Primeiro carregamento de dados para o sistema.
 
@@ -125,17 +125,15 @@ Classes que realiza a mediação entre as operações dos arquivos e a entrada d
 + Construtor: Pede uma Série válida como parâmetro
 + incluirEpisodio(Episodio e): Função para insirir Episódio e utilizando os métodos de ArquivoEpisodio 
 + excluirEpisodio(int id): Função para excluir Episodio por ID. Testar se o episódio é válido para remoção(existe no bd e o id pertence a série)
-+ excluirEpisodio(String entrada): Função para excluir Episodio pelo nome. Testar se o episódio é válido para remoção(existe no bd e o id pertence a série)
++ excluirEpisodio(Episódio e): Função para excluir Episodio dado um objeto Episódio. Testar se o episódio é válido para remoção(existe no bd e o id pertence a série)
 + excluirEpisodio(int id, int temp): Função para excluir Episodio por ID de uma temporada. Testar se o episódio é válido para remoção(existe no bd, pertence a série e está na temporada especificada)
-+ excluirEpisodio(String entrada, int temp): Função para excluir Episodio pelo nome de uma temporada. Testar se o episódio é válido para remoção(existe no bd, pertence a série e está na temporada especificada)
 + alterarEpisodio(Episodio e): Função para alterar algum valor da Episodio.
 + buscarEpisodio(): Função que retorna todos os episódios da série
 + buscarEpisodio(int id): Função que busca um objeto Episódio pelo ID e retorna caso esteja na série.
 + buscarEpisodio(String entrada): Função que le um nome e retorna um episódio que contém a sequência inserida que está na série especificada. Pode receber mais de um objeto da funcao do arqEpisodio.
 + buscarEpisodioTemporada(int temp): Função que retorna uma lista de episódios que estão na sérieAtual e presentes na temporada temp.
 + buscarEpisodio(int id, int temp): Função que busca um objeto Episódio pelo ID e retorna caso esteja na série e na temporada.
-+ buscarEpisodio(String entrada, int temp): Função que le um nome e retorna um episódio que contém a sequência inserida que está na série e na temporada especificada. Pode receber mais de um objeto da funcao do arqEpisodio.
-+ verificarEpisodiosSerie( ): Função estática que, com um ID de Série, retorna verdadeiro ou falso se tiver um ou mais episódios atrelados a essa série.
++ verificarEpisodiosSerie(int idSerie): Função estática que, com um ID de Série, retorna verdadeiro ou falso se tiver um ou mais episódios atrelados a essa série.
 + povoar( ): Primeiro carregamento de dados para o sistema.
 
 ## Visao
@@ -147,6 +145,7 @@ Classes para fazer o controle de Entradas e Saídas do Sistema para cada Entidad
 #### Atributos
 
 + private static Scanner console = new Scanner(System.in);
++ ControleSerie controleSerie;
 
 #### Funções
 
@@ -164,26 +163,26 @@ PucFlix v(versao)
 ```
 + lerSerie( ): Função para ler uma entrada de dados com suas devidas verificações e gerar um objeto da Classe Serie e retorna-lo, caso objeto não seja válido, levantar exceção. O questioário deve ter seguinte forma:
 “Qual o/a (atributo) (tipo do atributo e/ou regras/formato)? ” para cada atributo. Ao final, pedir uma confirmação com (S/N)
++ lerSerie(Serie antiga): Funcionamento parecido com o lerSerie sem parâmetro, porém caso o usuário aperte Enter em um atributo ele terá o mesmo valor que o atributo da Serie antiga. Usado no método de alterarSerie()
 + mostrarSerie(Serie s): Chama o toString da classe Serie
 + incluirSerie( ): Chama a função ControleSerie.incluirSerie() passando o resultado de lerSerie como parâmetro. Mostrar mensagem de sucesso ou falha
 + excluirSerie( ): Função para chamar ControleSerie.excluirSerie(). Chamar buscarUmaSerie() e utilizar retorno como parâmetro em ControleSerie.excluirSerie(). Mostrar mensagem de sucesso ou falha
-+ alterarSerie( ): Função para chamar ControleSerie.alterarSerie(). Chamar buscarUmaSerie() e utilizar retorno como parâmetro em ControleSerie.alterarSerie(). Mostrar mensagem de sucesso ou falha.
++ alterarSerie( ): Função para chamar ControleSerie.alterarSerie(). Chamar buscarUmaSerie(), depois chamar a lerSerie() com o objeto retornado para criar a série alterada. Depois utilizar retorno como parâmetro em ControleSerie.alterarSerie(). Mostrar mensagem de sucesso ou falha.
 + buscarUmaSerie(): Chamar buscarSerie e caso retorno seja uma lista com mais de 1 valor, deve apresentar um menu de escolhas dos resultados obtidos para escolher apenas um. Mostrar mensagem de sucesso (a própria função mostrarSerie()) ou falha
-+ buscarSerie(): Primeiramente, realiza uma pergunta para o usuário decidir se a busca é por ID ou por Nome, depois, chamar a função respectiva a escolha da classe ControleSerie. "1. Buscar por ID\n 2. Buscar por Nome". Mostrar mensagem de sucesso (a própria função mostrarSerie()) ou falha
-+ buscarEpisodiosSerie( ): Primeiramente, chama por buscarUmaSerie() e, caso retorne um objeto válido, realiza uma pergunta para o usuário decidir se a busca é para todos os episódios de uma Serie ou para uma temporada específica, depois, chamar a função respectiva a escolha da classe ControleSerie. Caso a escolha seja por 2, primeiramente fazer uma entrada perguntando a temporada desejada "1. Buscar todos os episódios\n 2. Buscar episódios de uma temporada". Mostrar os episódios chamando VisaoEpisodio.mostrarEpisodio()
-+ povoar( ): Chama função do controle para povoar dados
++ buscarEpisodios( ): Função para buscar todos os Episódios de uma Série, listá-los e mostrar o escolhido pelo usuário
 
 ### VisaoEpisodio
 
 #### Atributos
 
 + private static Scanner console = new Scanner(System.in);
-+ Serie serieAtual
-+ int temporadaAtual
-+ VisaoSerie visaoSerie
++ Serie serie -> representa a série atual
++ int temp -> representa a temporada atual
++ ControleEpisodio controle
 
 #### Funções
 
++ Contrutor passando uma série como parâmetro e outro vazio.
 + menu( ): Função que cria um menu, pede uma entrada de dados enquanto for diferente de 0. Em primeira instância, deve ser feita a escolha de qual série será trabalhada, depois, para cada valor entre 1 e 5, realizar certas funções de CRUD, opções como excluir deve chamar função visaoEpisodio.excluir() que faz a escolha entre excluir por nome ou por ID. (Lembrete: sempre quando voltar, zerar a serieAtual e temporadaAtual)Estética:
 ```
 PucFlix v(versao)          ->  PucFlix v(versao)
@@ -196,16 +195,22 @@ PucFlix v(versao)          ->  PucFlix v(versao)
                                5 - Escolher Temporada
                                0 - Voltar
 ```
++ menuTemporada( ): Função para controlar as opções da tela 'Início > Episódios > Nome da Série > Temporada x'
 + lerEpisodio( ): Função para ler uma entrada de dados com suas devidas verificações e gerar um objeto da Classe Episodio e retorna-lo, caso objeto não seja válido, levantar exceção. Caso valor de temporadaAtual seja diferente de 0, ele será o valor atribuido à variável temporada do episódio, caso contrário, perguntar no questionário. O questioário deve ter seguinte forma:
 “Qual o/a (atributo) (tipo do atributo e/ou regras/formato)? ” para cada atributo. Ao final, pedir uma confirmação com (S/N)
++ lerEpisodio(Episodio antigo): Função similar a lerEpisodio(), porém caso seja pressionado enter a cada atributo deve copiar o valor do parâmetro. Utilizada para atualizar um episódio.
 + escolherSerie( ): Função para entrar em uma série que será realizada as opções de CRUD, chamar VisaoSerie.buscarSerie( ) e salvar no atributo serieAtual 
 + mostrarEpisodio(Episodio e): Chama o toString da classe Episodio
 + incluirEpisodio( ): Chama a função ControleEpisodio.incluirEpisodio() passando o resultado de lerSerie como parâmetro. Mostrar mensagem de sucesso ou falha
 + excluirEpisodio( ): Função para chamar ControleEpisodio.excluirEpisodio(). Chamar buscarUmEpisodio() e utilizar retorno como parâmetro em ControleEpisodio.excluirEpisodio(). Mostrar mensagem de sucesso ou falha
 + alterarEpisodio( ): Função para chamar ControleEpisodio.alterarEpisodio(). Chamar buscarUmEpisodio() e utilizar retorno como parâmetro em ControleEpisodio.alterarEpisodio(). Mostrar mensagem de sucesso ou falha
-+ buscarEpisodio( ): Primeiramente, realiza uma pergunta para o usuário decidir se a busca é por ID ou por Nome, depois, chamar a função respectiva a escolha da classe ControleEpisodio. "1. Buscar por ID\n 2. Buscar por Nome\n 3. Buscar por Temporada\n 4. Buscar todos da série". Mostrar mensagem de sucesso (a própria função mostrarSerie()) ou falha. Caso temporadaAtual seja diferente de 0, as opções mudam para -> "1. Buscar por ID\n 2. Buscar por Nome\n 3. Buscar todos", onde as funções são da ControleEpisodio com o parâmetro de int temporada adicional(Para o buscar todos, usar buscarTemporada).
-+ buscarUmEpisodio( ): Chamar o buscarEpisodio() e caso retorno seja uma lista com mais de um objeto, criar um menu de seleção para escolher apenas um valor e retorná-lo
-+ escolherTemporada( ): Primeiramente, pede uma entrada de dados de um int temporada. Realiza a verificação se é uma temporada válida e mostra um submenu com todas as opções anteriores, atualizar a variavel temporadaAtual e o "caminho" 
++ buscarEpisodios( ): Primeiramente, realiza uma pergunta para o usuário decidir se a busca é por ID ou por Nome, depois, chamar a função respectiva a escolha da classe ControleEpisodio. "1. Buscar por ID\n 2. Buscar por Nome\n 3. Buscar por Temporada\n 4. Buscar todos da série". Mostrar mensagem de sucesso (a própria função mostrarSerie()) ou falha. Caso temporadaAtual seja diferente de 0, as opções mudam para -> "1. Buscar por ID\n 2. Buscar por Nome\n 3. Buscar todos", onde as funções são da ControleEpisodio com o parâmetro de int temporada adicional(Para o buscar todos, usar buscarTemporada).
++ buscarUmEpisodio( ): Chamar o buscarEpisodios() e caso retorno seja uma lista com mais de um objeto, criar um menu de seleção para escolher apenas um valor e retorná-lo
++ buscarEpisodioNome(): Função para buscar lista de episódios dado uma entrada
++ buscarEpisodioID(): Função para retornar um Episódio de acordo com o ID.
++ buscarUmEpisodioTemporada(int temporada): Função para retornar um Episódio escolhido pelo usuário dentro de uma temporada, dado uma entrada
++ buscarEpisodiosTemporada(int temporada): Função para listar todos os episódios de uma temporada.
++ entrarTemporada( ): Primeiramente, pede uma entrada de dados de um int temporada. Realiza a verificação se é uma temporada válida e mostra um submenu com todas as opções anteriores, atualizar a variavel temporadaAtual e o "caminho" 
 + povoar( ): Chama função do controle para povoar dados
 
 ## Modelo
@@ -223,7 +228,7 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 #### Funções
 
 + Contrutor: Chamando o super( ) e também inicializando a ArvoreBMais e o HashExtensivel (Se o Hash já existir, não sobrescrever) 
-+ read(string nome): Função que recebe uma string de Nome e faz a pesquisa no bd, retornando todos os episódios que começam com a sequência da entrada.
++ readNome(string nome): Função que recebe uma string de Nome e faz a pesquisa no bd, retornando todos os episódios que começam com a sequência da entrada.
 + readEpisodios(int IDSerie): Função que retorna todos os episódios da serie. Utilizar nova instância ArquivoEpisodios para isso. 
 + Sobrescrever os métodos create( ), update( ), delete( ) para fazerem as devidas alterações na ArvoreBMais e no HashExtensivel. Testar ao deletar se série tem episódio, caso tenha mostrar erro e abordar função.
 
@@ -239,10 +244,11 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 #### Funções
 
 + Contrutor: Chamando o super( ) e também inicializando a ArvoreBMais e o HashExtensivel (Se o Hash já existir, não sobrescrever) 
-+ read(String nome): Função que recebe uma string de Nome e faz a pesquisa no bd, retornando todos os episódios que começam com a sequência da entrada.
++ readNome(String nome): Função que recebe uma string de Nome e faz a pesquisa no bd, retornando todos os episódios que começam com a sequência da entrada.
++ readIDSerie(int IDSerie): Função para buscar todos os Episódios cujo nome inicia com uma String especificada
 + Sobrescrever os métodos create( ), update( ), delete( ) para fazerem as devidas alterações na ArvoreBMais e no HashExtensivel
 
-### ParIDID implements RegistroHashExtensivel <ParIDID>
+### ParIDID implements RegistroArvoreBMais <ParIDID>
 
 #### Atributos
 
@@ -254,10 +260,11 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 
 + Construtores -> Um sem parâmetros e outro com int idS e int idEp
 + get de IDSerie e IDEpisodio
-+ int hashCode( ):
-+ short size( ):
-+ byte[] toByteArray() 
-+ fromByteArray(byte[] ba)
++ size( ): Retorna o tamanho do registro
++ toByteArray(): Converte o objeto para um array de bytes
++ fromByteArray(byte[] ba): Preenche o objeto a partir de um array de bytes
++ compareTo(ParIDID obj): Compara este objeto com outro ParIDID baseado no ID do Episódio
++ clone(): Retorna uma cópia do objeto
 
 
 ### ParNomeID implements RegistroArvoreBMais <ParNomeID>
@@ -271,21 +278,29 @@ Classes para o tratamento dos arquivos, como expecializações da classe Arquivo
 
 #### Funções
 
-+ public short size();
-+ public byte[] toByteArray() throws IOException; 
-+ public void fromByteArray(byte[] ba) throws IOException; 
-+ public int compareTo(T obj); 
-+ public ParNomeID clone();
++ Construtores -> Um sem parâmetros e outro com String nome e int ID
++ get de ID e Nome
++ size( ): Retorna o tamanho do registro
++ toByteArray(): Converte o objeto para um array de bytes
++ fromByteArray(byte[] ba): Preenche o objeto a partir de um array de bytes
++ compareTo(ParNomeID obj): Compara este objeto com outro ParNomeID baseado no nome
++ clone(): Retorna uma cópia do objeto
++ toString(): Método para fazer uma versão de String do ParNomeID
++ transforma(): Função para normalizar as strings, deixando minúsculas e sem espaço
 
 # Experiências Individuais
 
 ## Augusto
 
+<div align="justify">
 Para esse Trabalho Prático, eu tive uma função que não costumo ter dentro da faculdade: a de Product Manager. Apesar de ser bem difícil descrever todo o funcionamento de um programa e contornar os seus possíveis problemas, foi muito bom para possuir um entendimento melhor da questão, mesmo falhando em prever tudo. Além disso, foi uma experiência única de liderança que agregou de maneira positiva na minha vida.
+</div>
 
 ## Lucas
 
+<div align="justify">
 Nessa atividade, tive a oportunidade de aprender melhor como funciona a manipulação em baixo nível de dados em memória secundária, o que foi uma experiência agregadora aos meus conhecimentos prévios, sobretudo na área de Banco de Dados. Com os conhecimentos adquiridos nesse Trabalho Prático, serei capaz de tomar melhores decisões de projeto para implementar um Banco de Dados complexo construído a partir de maior abstrações, tornando o armazenamento e a consulta das informações mais eficiente.
+</div>
 
 ## João
 
@@ -296,6 +311,10 @@ Além disso, gostaria de destacar o apoio fundamental dos meus colegas, que me a
 
 Por fim, o trabalho contribuiu significativamente para o aprofundamento do meu conhecimento sobre estruturas de arquivos, permitindo aplicar na prática os conceitos teóricos abordados em sala de aula.
 </div>
+
+# Planos futuros
+
+Para implementação futura pensamos em adicionar o atributo do número do episódio e, sempre quando mostrar episódios, mostrar de maneira ordenada pelo seu número depois sua temporada.
 
 # Materiais adicionais
 
