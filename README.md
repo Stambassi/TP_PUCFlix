@@ -2,7 +2,7 @@
 
 O projeto PUCFlix é um cadastro de séries e episódios, com uma interface textual para mostrar os registros. O nosso projeto é uma implementação simples de um Banco de Dados sem utilizar um SGBD, contendo todas as operações de CRUD (Create, Read, Update e Delete) para as duas entidades, garantindo seus relacionamentos.
 
-Sobre o nosso grupo: [Membros!](#✒️-autores)
+Sobre o nosso grupo: [Membros!](#%EF%B8%8F-autores)
 
 # ‼️ Checklist
 
